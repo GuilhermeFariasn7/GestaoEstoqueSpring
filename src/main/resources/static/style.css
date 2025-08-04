@@ -1,0 +1,503 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+/* === BASE === */
+body {
+  font-family: 'Libertinus Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  /*background-color: #E7EAEA;*/
+    color:white;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 80vh;
+  box-sizing: border-box;
+}
+
+/* Ativa reserva de espaço só se tiver header fixo */
+body.with-header {
+  padding-top: 100px;
+}
+
+a {
+  cursor: pointer;
+  text-decoration: none;
+  color:white;
+}
+
+/* === HEADER === */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #8BBCC4;
+  margin-bottom:10px;
+  padding: 10px 30px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  z-index: 999;
+  color: white;
+}
+header a{
+
+    padding:10px;
+    border-bottom: 1px solid #445d74;
+
+}
+header a:hover {
+    transform: scale(1.05);
+    background-color: #8b92c4;
+
+}
+p{
+    font-size:12px;
+    color:#4F4F4F;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info img {
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+}
+
+.user-info span {
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* === LOGIN & CADASTRO === */
+.login-box {
+  background: #8BBCC4;
+  padding: 40px;
+  margin-top:20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  text-align: center;
+
+}
+
+.login-box img.logo {
+  width: 220px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+}
+
+.login-box h2 {
+  margin-bottom: 24px;
+
+}
+.login-box .input-group{
+
+  margin-bottom: 16px;
+
+}
+.input-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  padding: 0 12px;
+}
+
+.input-group input {
+  border: none;
+  outline: none;
+  padding: 10px;
+  flex: 1;
+  font-size: 14px;
+  background: none;
+  color: #333;
+}
+
+.input-group i {
+  color: #999;
+  margin-left: 8px;
+  font-size: 16px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.login-box button:hover {
+  background-color: #357ec7;
+}
+
+.login-box .options {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #112138;
+}
+
+.login-box .options a {
+  color: #112138;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.login-box .options a:hover {
+  color: #357ec7;
+}
+
+/* === DASHBOARD === */
+.dashboard {
+    display:flex;
+    width: 100%;
+    max-width: 1000px;
+    background: linear-gradient(to right, #445d74, #a3c9f9);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    margin: 40px auto; /* já tem header fixo, então só margem padrão */
+    margin-top:105px;
+}
+
+.welcome {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.welcome h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+
+}
+
+.welcome p {
+  font-size: 18px;
+  color: #333;
+  opacity: 0.9;
+}
+
+.modules {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 20px;
+}
+
+.card {
+  background: #8BBCC4;
+  padding: 30px 40px;
+  border-radius: 15px;
+  text-align: center;
+  width: 160px;
+  transition: transform 0.3s;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  color: white;
+  text-decoration:none;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  background-color: #8b92c4;
+}
+
+.card i {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.card span {
+  display: block;
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  text-decoration:none;
+}
+
+.mensagem {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  text-align: center;
+  transition: opacity 0.5s ease;
+}
+.mensagem.sucesso {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.recuperaSenha{
+
+    width: 320px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+
+}
+.fade-out {
+  opacity: 0;
+}
+.botaoFlutuante{
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #8BBCC4;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 28px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
+}
+/* Filtros alinhados */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.filtros label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 2px;
+  color: white;
+}
+
+.filtros input {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  color: black;
+}
+
+.filtros button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 7px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.filtros button:hover {
+  background-color: #357ec7;
+}
+
+/* Tabela */
+.tabela-wrapper {
+padding:10px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabela-clientes {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-clientes thead {
+  background: #8BBCC4;
+  color: white;
+}
+
+.tabela-clientes th,
+.tabela-clientes td {
+
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  text-align: left;
+}
+
+.tabela-clientes tbody tr {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  background:white;
+  color: #333;
+}
+.tabela-clientes td.col-excluir i {
+  background-color: red;
+  color: #ddd;
+  display: inline-block; /* para respeitar background e padding */
+  padding: 5px;
+  border-radius: 4px; /* arredondar se quiser */
+  cursor: pointer; /* se for clicável */
+  text-align: center;
+  vertical-align: middle;
+}
+.tabela-clientes tbody tr:hover {
+  background: #d5b0aa;
+}
+.container{
+    width: 100%;
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+}
+.tabela{
+    display:flex;
+    width: 100%;
+    background: linear-gradient(to right, #e0f0ff, #a3c9f9);
+
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top:15px;
+}
+.mainFiltro {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width: 100%;
+    background: #ededed;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.mainFiltro .input-group{
+    margin-right:10px;
+}
+
+.btn {
+  padding: 10px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background-color: #357ec7;
+}
+
+/* === FORMULÁRIO CADASTRO CLIENTE === */
+header.cadastro-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #2C6BA6 !important;
+  margin-bottom: 20px !important;
+  padding: 20px !important;
+  width: 100% !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  box-sizing: border-box !important;
+  z-index: 1000 !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 24px !important;
+  text-align: center !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.container.cadastro-container {
+  margin-top: 100px;
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+form.cadastro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-group.cadastro {
+  position: relative;
+}
+
+.input-group.cadastro input,
+.input-group.cadastro select {
+  width: 100%;
+  padding: 12px 40px 12px 40px;
+  font-size: 16px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+  color: #333;
+  background: #fafafa;
+}
+
+.input-group.cadastro input:focus,
+.input-group.cadastro select:focus {
+  border-color: #2C6BA6;
+  background: #fff;
+}
+
+.input-group.cadastro i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2C6BA6;
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.botoes-form.cadastro {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.linha-inativa {
+  background-color: #f8d7da !important;
+  color: #842029 !important;
+}

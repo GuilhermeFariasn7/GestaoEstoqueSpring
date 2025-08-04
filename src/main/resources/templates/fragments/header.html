@@ -1,0 +1,29 @@
+<!-- fragments/header.html -->
+<header th:fragment="mainHeader">
+    <div class="user-info">
+        <img src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" alt="Usuário">
+        <span th:text="'Olá, ' + ${nomeUsuario} + '!'">Olá, Usuário!</span>
+
+    </div>
+    <a href="/mainCliente" >
+        <i class="fas fa-user-friends"></i>
+        <span>Clientes</span>
+    </a>
+    <a href="/mainProduto" >
+        <i class="fas fa-cubes"></i>
+        <span>Produtos</span>
+    </a>
+    <a href="/mainEstoque" >
+        <i class="fas fa-boxes"></i>
+        <span>Estoque</span>
+    </a>
+    <a href="/mainRelatorio" >
+        <i class="fas fa-chart-line"></i>
+        <span>Relatórios</span>
+    </a>
+    <a href="/logout">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Sair</span>
+    </a>
+</header>
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Cadastro de Cliente - Gestão de Estoque</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans&display=swap" rel="stylesheet"/>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    <!-- Seu CSS -->
+    <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+
+<header>
+    <a href="/mainCliente" class="btn btn-secundario">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</header>
+
+<div class="login-box">
+
+    <form action="/salvarCliente" method="post">
+        <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
+        <div th:if="${sucesso}"
+             class="mensagem sucesso"
+             th:text="${sucesso}"
+             th:attr="data-redirect=${rotaRedirect}"></div>
+        <h2>Informe os dados a seguir para inclusão</h2>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" name="nome" placeholder="Nome completo" required/>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-id-card"></i>
+            <input type="text" name="cpf" placeholder="CPF" required/>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-phone"></i>
+            <input type="text" name="telefone" placeholder="Telefone"/>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="text" name="email" placeholder="Email"/>
+        </div>
+
+        <div class="input-group">
+            <i class="fas fa-toggle-on"></i>
+            <select name="status" required>
+                <option value="" disabled selected>Status</option>
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Salvar
+        </button>
+
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+<script src="/js/style.js"></script>
+</body>
+</html>

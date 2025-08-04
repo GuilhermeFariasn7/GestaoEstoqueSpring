@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Editar Cliente - Gestão de Estoque</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans&display=swap" rel="stylesheet"/>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Seu CSS -->
+  <link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+
+<header>
+  <a href="/mainCliente" class="btn btn-secundario">
+    <i class="fas fa-arrow-left"></i> Voltar
+  </a>
+  Editar Cliente
+</header>
+
+<div class="login-box">
+  <form action="/atualizarCliente" method="post">
+    <!-- Campo oculto para o ID do cliente -->
+    <input type="hidden" name="id" th:value="${cliente.id}"/>
+
+    <div class="input-group">
+      <i class="fas fa-user"></i>
+      <input type="text" name="nome" placeholder="Nome completo" required
+             th:value="${cliente.nome}"/>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-id-card"></i>
+      <input type="text" name="cpf" placeholder="CPF" required
+             th:value="${cliente.cpf}"/>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-phone"></i>
+      <input type="text" name="telefone" placeholder="Telefone"
+             th:value="${cliente.telefone}"/>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-envelope"></i>
+      <input type="email" name="email" placeholder="Email"
+             th:value="${cliente.email}"/>
+    </div>
+
+    <div class="input-group">
+      <i class="fas fa-toggle-on"></i>
+      <select name="status" required>
+        <option value="" disabled>Selecione o status</option>
+        <option value="Ativo" th:selected="${cliente.status == 'Ativo'}">Ativo</option>
+        <option value="Inativo" th:selected="${cliente.status == 'Inativo'}">Inativo</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      <i class="fas fa-save"></i> Atualizar
+    </button>
+
+  </form>
+</div>
+
+</body>
+</html>

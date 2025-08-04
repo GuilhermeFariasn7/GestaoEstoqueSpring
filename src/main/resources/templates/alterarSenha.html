@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Alterar Senha</title>
+  <!-- Pré-conexão para melhorar performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- IMPORTA a fonte Libertinus Sans do Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/style.css}" />
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+</head>
+<body>
+<div class="login-box">
+
+
+  <form method="post" action="/alterarSenha">
+    <input type="hidden" name="token" th:value="${token}" />
+    <img class="logo" src="https://i.ibb.co/Fk6ZVNfV/alterarsenha.png" alt="Logo">
+    <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
+    <div th:if="${sucesso}"
+         class="mensagem sucesso"
+         th:text="${sucesso}"
+         th:attr="data-redirect=${rotaRedirect}"></div>
+
+
+    <div class="input-group">
+      <input type="password" name="senha" placeholder="Senha" th:value="${senha}" required />
+      <a><i id="toggleSenha" class="fas fa-eye"></i></a><!-- Olho aberto -->
+      <i class="fas fa-lock"></i>
+    </div>
+    <div class="input-group">
+      <input type="password" name="confirmaSenha" placeholder="Confirmar Senha" th:value="${confirmaSenha}" required />
+      <a><i id="toggleConfSenha" class="fas fa-eye"></i></a><!-- Olho aberto -->
+      <i class="fas fa-lock"></i>
+    </div>
+
+    <button type="submit">Alterar Senha</button>
+
+    <div class="options">
+      <a href="/login">Voltar para o Login</a>
+    </div>
+  </form>
+</div>
+<script th:src="@{/js/style.js}"></script>
+</body>
+</html>

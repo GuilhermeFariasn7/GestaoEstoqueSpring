@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Clientes - Gestão de Estoque</title>
+
+    <!-- Google Fonts + Libertinus -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap"
+          rel="stylesheet">
+
+    <!-- Seu CSS -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="with-header">
+
+<div th:replace="fragments/header :: mainHeader"></div>
+<div class="container">
+    <form class="mainFiltro" method="get" action="/mainCliente">
+        <div class="input-group">
+            <input type="number" name="codigo" placeholder="Buscar por código" th:value="${param.codigo}">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="input-group">
+            <input type="text" name="nome" placeholder="Buscar por nome" th:value="${param.nome}">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <div class="input-group">
+            <input type="text" name="cpf" placeholder="Buscar por CPF" th:value="${param.cpf}">
+            <i class="fas fa-envelope"></i>
+        </div>
+
+        <button type="submit" class="btn">
+            <i class="fas fa-search"></i> Buscar
+        </button>
+    </form>
+
+    <div class="tabela">
+        <!-- Tabela -->
+        <div class="tabela-wrapper">
+            <table class="tabela-clientes">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cliente : ${clientes}"
+                    th:onclick="'window.location.href=\'/editarCliente/' + ${cliente.id} + '\';'"
+                    th:classappend="${cliente.status == 'Inativo'} ? 'linha-inativa' : ''"
+                    style="cursor:pointer;">
+                    <td class="col-excluir"><i class="fas fa-trash"></i></td>
+                    <td th:text="${cliente.id}">0</td>
+                    <td th:text="${cliente.nome}">-</td>
+                    <td th:text="${cliente.cpf}">-</td>
+                    <td th:text="${cliente.telefone}">-</td>
+                    <td th:text="${cliente.email}">-</td>
+                    <td th:text="${cliente.status}">-</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Botão Flutuante -->
+<a href="/novoCliente" class="botaoFlutuante" title="Incluir novo cliente">
+    <i class="fas fa-plus"></i>
+</a>
+
+</body>
+</html>
