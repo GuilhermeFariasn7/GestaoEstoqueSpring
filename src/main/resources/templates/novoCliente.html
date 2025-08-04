@@ -34,30 +34,34 @@
         <h2>Informe os dados a seguir para inclusão</h2>
         <div class="input-group">
             <i class="fas fa-user"></i>
-            <input type="text" name="nome" placeholder="Nome completo" required/>
+            <input type="text" name="nome" placeholder="Nome completo" required
+                   th:value="${nome}"/>
         </div>
 
         <div class="input-group">
             <i class="fas fa-id-card"></i>
-            <input type="text" name="cpf" placeholder="CPF" required/>
+            <input type="text" name="cpf" placeholder="CPF" required
+                   th:value="${cpf}"/>
         </div>
 
         <div class="input-group">
             <i class="fas fa-phone"></i>
-            <input type="text" name="telefone" placeholder="Telefone"/>
+            <input type="text" name="telefone" placeholder="Telefone"
+                   th:value="${telefone}"/>
         </div>
 
         <div class="input-group">
             <i class="fas fa-envelope"></i>
-            <input type="text" name="email" placeholder="Email"/>
+            <input type="email" name="email" placeholder="Email"
+                   th:value="${email}"/>
         </div>
 
         <div class="input-group">
             <i class="fas fa-toggle-on"></i>
             <select name="status" required>
-                <option value="" disabled selected>Status</option>
-                <option value="Ativo">Ativo</option>
-                <option value="Inativo">Inativo</option>
+                <option value="" disabled>Selecione o status</option>
+                <option value="Ativo"  th:selected="${status == 'Ativo'}">Ativo</option>
+                <option value="Inativo" th:selected="${status == 'Inativo'}">Inativo</option>
             </select>
         </div>
 

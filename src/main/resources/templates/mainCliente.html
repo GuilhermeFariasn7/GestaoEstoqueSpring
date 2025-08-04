@@ -59,7 +59,12 @@
                     th:onclick="'window.location.href=\'/editarCliente/' + ${cliente.id} + '\';'"
                     th:classappend="${cliente.status == 'Inativo'} ? 'linha-inativa' : ''"
                     style="cursor:pointer;">
-                    <td class="col-excluir"><i class="fas fa-trash"></i></td>
+                    <td class="col-excluir">
+                        <button type="button" class="btn-excluir" th:attr="data-id=${cliente.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                    </td>
                     <td th:text="${cliente.id}">0</td>
                     <td th:text="${cliente.nome}">-</td>
                     <td th:text="${cliente.cpf}">-</td>
@@ -77,6 +82,6 @@
 <a href="/novoCliente" class="botaoFlutuante" title="Incluir novo cliente">
     <i class="fas fa-plus"></i>
 </a>
-
+<script th:src="@{/js/style.js}"></script>
 </body>
 </html>

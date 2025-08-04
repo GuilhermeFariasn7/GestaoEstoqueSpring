@@ -1,3 +1,14 @@
+document.querySelectorAll('.btn-excluir').forEach(btn => {
+  btn.addEventListener('click', function(event) {
+    event.stopPropagation();
+    const clienteId = this.dataset.id;
+    if (confirm("Tem certeza que deseja excluir este cliente?")) {
+      window.location.href = "/excluirCliente/" + clienteId;
+    }
+  });
+});
+
+
 document.addEventListener("DOMContentLoaded", function() {
   const mensagens = document.querySelectorAll(".mensagem");
   const tempoVisivel = 2000;
