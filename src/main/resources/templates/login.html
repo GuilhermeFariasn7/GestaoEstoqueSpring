@@ -1,53 +1,52 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Login - Gestão de Estoque</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <head>
+        <meta charset="UTF-8">
+        <title>Login - Gestão de Estoque</title>
+        <link rel="stylesheet" th:href="@{/style.css}">
 
-    <!-- Pré-conexão para melhorar performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <!-- Pré-conexão para melhorar performance -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- IMPORTA a fonte Libertinus Sans do Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-
-<div class="login-box">
-
-    <img class="logo" src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" alt="Logo">
-    <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
-    <div th:if="${sucesso}"
-         class="mensagem sucesso"
-         th:text="${sucesso}"
-         th:attr="data-redirect=${rotaRedirect}"></div>
+        <!-- IMPORTA a fonte Libertinus Sans do Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    </head>
+    <body>
+        <div class="login-box">
+            <div class="login-box-imglogo">
+                <img class="logo" src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" alt="Logo">
+            </div>
+            <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
+            <div th:if="${sucesso}"
+                 class="mensagem sucesso"
+                 th:text="${sucesso}"
+                 th:attr="data-redirect=${rotaRedirect}">
 
-    <form method="post" action="login">
-        <div class="input-group">
-            <input type="email" name="email" placeholder="Email" th:value="${email}" required>
-            <i class="fas fa-envelope"></i>
+            </div>
+            <form method="post" action="login">
+                <div class="input-group">
+                    <input type="login" name="login" placeholder="Login" th:value="${login}" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="senha" placeholder="Senha" th:value="${senha}" required>
+                    <a><i id="toggleSenha" class="fas fa-eye"></i></a><!-- Olho aberto -->
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button type="submit">Entrar</button>
+            </form>
+
+            <div class="options">
+                <a href="/recuperarSenha">Esqueceu a senha?</a>
+            </div>
+            <div class="options">
+                <a href="/CadastroUsuario">Cadastre-se aqui</a>
+            </div>
         </div>
-        <div class="input-group">
-            <input type="password" name="senha" placeholder="Senha" th:value="${senha}" required>
-            <a><i id="toggleSenha" class="fas fa-eye"></i></a><!-- Olho aberto -->
-            <i class="fas fa-lock"></i>
-        </div>
-        <button type="submit">Entrar</button>
-    </form>
-
-    <div class="options">
-        <a href="/recuperarSenha">Esqueceu a senha?</a>
-    </div>
-    <div class="options">
-        <a href="/CadastroUsuario">Cadastre-se aqui</a>
-    </div>
-</div>
-<script th:src="@{/js/style.js}"></script>
-</body>
+        <script th:src="@{/js/style.js}"></script>
+    </body>
 </html>

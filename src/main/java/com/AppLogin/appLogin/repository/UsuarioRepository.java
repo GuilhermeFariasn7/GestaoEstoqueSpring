@@ -8,4 +8,5 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
     Usuario findById(long Id);
 
     Usuario findByEmail(String email);
+    Usuario findByLogin(String login);
 }

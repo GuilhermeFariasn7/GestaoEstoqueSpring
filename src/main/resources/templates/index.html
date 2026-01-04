@@ -1,60 +1,49 @@
-  <!DOCTYPE html>
-  <html lang="pt-br">
-  <head>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
     <meta charset="UTF-8">
     <title>Início - Gestão de Estoque</title>
     <!-- Pré-conexão para melhorar performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- IMPORTA a fonte Libertinus Sans do Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  </head>
-  <body>
+    </head>
+    <body>
+        <div class="dashboard">
+            <div class="welcome">
+                <h3 th:text="'Olá ' + ${nomeUsuario} + ', bem-vindo ao Sistema de Gestão de Estoque! Selecione uma das opções para inicializar suas tarefas'">Olá Usuário, bem-vindo ao Sistema de Gestão de Estoque! Selecione uma das opções para inicializar suas tarefas</h3>
+                <img src="https://i.ibb.co/TD2qpJ6w/plimhome.png" alt="plimhome" class="imgIndex">
+            </div>
 
-  <header>
-    <div class="user-info">
-      <img src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" alt="Usuário">
-      <span th:text="'Olá, ' + ${nomeUsuario} + '!'">Olá, Usuário!</span>
 
-    </div>
-
-  </header>
-
-  <!-- Agrupamento correto das seções dentro da dashboard -->
-  <div class="dashboard">
-    <div class="welcome">
-      <h1>Bem-vindo ao Sistema de Gestão de Estoque</h1>
-      <p>Escolha uma das opções abaixo para continuar</p>
-    </div>
-
-    <div class="modules">
-      <a href="/mainCliente" class="card">
-        <i class="fas fa-user-friends"></i>
-        <span>Clientes</span>
-      </a>
-      <a href="/mainProduto" class="card">
-        <i class="fas fa-cubes"></i>
-        <span>Produtos</span>
-      </a>
-      <a href="/mainEstoque" class="card">
-        <i class="fas fa-boxes"></i>
-        <span>Estoque</span>
-      </a>
-      <a href="/mainRelatorio" class="card">
-        <i class="fas fa-chart-line"></i>
-        <span>Relatórios</span>
-      </a>
-      <a href="/logout" class="card">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Sair</span>
-      </a>
-    </div>
-
-  </div>
-
-  </body>
-  </html>
+            <div class="modules">
+                <a href="/mainCliente" class="card">
+                    <i class="fas fa-user-friends"></i>
+                    <span>Clientes</span>
+                </a>
+                <a href="/mainProduto" class="card">
+                    <i class="fas fa-cubes"></i>
+                    <span>Produtos</span>
+                </a>
+                <a href="/mainEstoque" class="card">
+                    <i class="fas fa-boxes"></i>
+                    <span>Estoque</span>
+                </a>
+                <a href="/mainRelatorio" class="card">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Relatórios</span>
+                </a>
+                <a href="/logout" class="card">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

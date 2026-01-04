@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Produtos - Gestão de Estoque</title>
+
+    <!-- Google Fonts + Libertinus -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap"
+          rel="stylesheet">
+
+    <!-- Seu CSS -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="with-header">
+
+<div th:replace="fragments/header :: mainHeader"></div>
+
+<div class="container">
+    <form class="mainFiltro" method="get" action="/mainProduto">
+        <div class="input-group">
+            <input type="number" name="codigo" placeholder="Buscar por código" th:value="${param.codigo}">
+            <i class="fas fa-barcode"></i>
+        </div>
+        <div class="input-group">
+            <input type="text" name="nome" placeholder="Buscar por nome" th:value="${param.nome}">
+            <i class="fas fa-box"></i>
+        </div>
+        <div class="input-group">
+            <input type="text" name="tipo" placeholder="Buscar por tipo" th:value="${param.tipo}">
+            <i class="fas fa-tags"></i>
+        </div>
+        <div class="input-group">
+            <input type="text" name="grupo" placeholder="Buscar por grupo" th:value="${param.grupo}">
+            <i class="fas fa-layer-group"></i>
+        </div>
+
+        <button type="submit" class="btn">
+            <i class="fas fa-search"></i> Buscar
+        </button>
+    </form>
+
+    <div class="tabela">
+        <!-- Tabela -->
+        <div class="tabela-wrapper">
+            <table class="tabela-clientes">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Código</th>
+                    <th>Imagem</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Grupo</th>
+                    <th>Estoque Atual</th>
+                    <th>Est. Máx</th>
+                    <th>Est. Mín</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="produto : ${produtos}"
+                    th:onclick="'window.location.href=\'/editarProduto/' + ${produto.id} + '\';'"
+                    style="cursor:pointer;">
+                    <td class="col-excluir">
+                        <button type="button" class="btn-excluir" th:attr="data-id=${produto.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                    <td th:text="${produto.id}">0</td>
+                    <td>
+
+                        <img th:src="@{'/produto/imagem/' + ${produto.id}}"
+                             width="100"
+                             height="100"
+                             alt="Imagem do produto"
+                             onerror="this.src='/static/img/SEMIMAGEM.jpg'" />
+                    </td>
+                    <td th:text="${produto.nome}">-</td>
+                    <td th:text="${produto.tipo}">-</td>
+                    <td th:text="${produto.grupo}">-</td>
+                    <td th:text="${produto.estoqueAtual}">-</td>
+                    <td th:text="${produto.estoqueMaximo}">-</td>
+                    <td th:text="${produto.estoqueMinimo}">-</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Botão Flutuante -->
+<a href="/novoProduto" class="botaoFlutuante" title="Incluir novo produto">
+    <i class="fas fa-plus"></i>
+</a>
+
+<script th:src="@{/js/style.js}"></script>
+</body>
+</html>

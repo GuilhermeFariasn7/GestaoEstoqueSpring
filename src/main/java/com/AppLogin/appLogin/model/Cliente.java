@@ -3,7 +3,7 @@ package com.AppLogin.appLogin.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "cliente") // Tabela singular
+@Table(name = "cliente")
 public class Cliente {
 
     @Id

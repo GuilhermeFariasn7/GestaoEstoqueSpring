@@ -165,62 +165,44 @@ public class ClienteController {
 
         Optional<Cliente> optionalCliente = clienteRepository.findById(id);
 
-        if (optionalCliente.isPresent()) {
-            Cliente cliente = optionalCliente.get();
-
-            // Validação de telefone (ex: (99) 99999-9999)
-            if (!telefone.matches("\\(\\d{2}\\)\\s9\\d{4}-\\d{4}")) {
-                model.addAttribute("erro", "Telefone inválido. Use o formato (DD) 9XXXX-XXXX.");
-                model.addAttribute("id", id);
-                model.addAttribute("nome", nome);
-                model.addAttribute("cpf", cpf);
-                model.addAttribute("telefone", telefone);
-                model.addAttribute("email", email);
-                model.addAttribute("status", status);
-                return "novoCliente";
-            }
-
-            // Validação simplificada de CPF ou CNPJ (apenas tamanho)
-            String documento = cpf.replaceAll("[^\\d]", "");
-            if (documento.length() != 11 && documento.length() != 14) {
-                model.addAttribute("erro", "Documento deve ser CPF (11 dígitos) ou CNPJ (14 dígitos).");
-                model.addAttribute("id", id);
-                model.addAttribute("nome", nome);
-                model.addAttribute("cpf", cpf);
-                model.addAttribute("telefone", telefone);
-                model.addAttribute("email", email);
-                model.addAttribute("status", status);
-                return "novoCliente";
-            }
-
-            cliente.setNome(nome);
-            cliente.setCpf(cpf);
-            cliente.setTelefone(telefone);
-            cliente.setEmail(email);
-            cliente.setStatus(status);
-
-            clienteRepository.save(cliente);
-
-            model.addAttribute("sucesso", "Cliente atualizado com sucesso!");
-            model.addAttribute("id", id);
-            model.addAttribute("nome", nome);
-            model.addAttribute("cpf", cpf);
-            model.addAttribute("telefone", telefone);
-            model.addAttribute("email", email);
-            model.addAttribute("status", status);
-            model.addAttribute("rotaRedirect", "/mainCliente");
-            return "novoCliente";
-        } else {
+        if (optionalCliente.isEmpty()) {
             model.addAttribute("erro", "Cliente não encontrado!");
-            model.addAttribute("id", id);
-            model.addAttribute("nome", nome);
-            model.addAttribute("cpf", cpf);
-            model.addAttribute("telefone", telefone);
-            model.addAttribute("email", email);
-            model.addAttribute("status", status);
             return "erro";
         }
+
+        Cliente cliente = optionalCliente.get();
+
+        // Atualiza com os dados enviados (mesmo que estejam errados, para manter no formulário)
+        cliente.setNome(nome);
+        cliente.setCpf(cpf);
+        cliente.setTelefone(telefone);
+        cliente.setEmail(email);
+        cliente.setStatus(status);
+
+        // Validação de telefone
+        if (!telefone.matches("\\(\\d{2}\\)\\s9\\d{4}-\\d{4}")) {
+            model.addAttribute("erro", "Telefone inválido. Use o formato (DD) 9XXXX-XXXX.");
+            model.addAttribute("cliente", cliente);
+            return "editarCliente";
+        }
+
+        // Validação simplificada de CPF ou CNPJ
+        String documento = cpf.replaceAll("[^\\d]", "");
+        if (documento.length() != 11 && documento.length() != 14) {
+            model.addAttribute("erro", "Documento deve ser CPF (11 dígitos) ou CNPJ (14 dígitos).");
+            model.addAttribute("cliente", cliente);
+            return "editarCliente";
+        }
+
+        // Salva cliente válido
+        clienteRepository.save(cliente);
+        model.addAttribute("sucesso", "Cliente atualizado com sucesso!");
+        model.addAttribute("cliente", cliente);
+        model.addAttribute("rotaRedirect", "/mainCliente");
+        return "editarCliente";
+
     }
+
 
     @GetMapping("/excluirCliente/{id}")
     public String excluirCliente(@PathVariable Long id) {

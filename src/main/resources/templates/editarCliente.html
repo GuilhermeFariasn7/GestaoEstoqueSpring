@@ -26,6 +26,11 @@
 
 <div class="login-box">
   <form action="/atualizarCliente" method="post">
+    <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
+    <div th:if="${sucesso}"
+         class="mensagem sucesso"
+         th:text="${sucesso}"
+         th:attr="data-redirect=${rotaRedirect}"></div>
     <!-- Campo oculto para o ID do cliente -->
     <input type="hidden" name="id" th:value="${cliente.id}"/>
 
@@ -68,6 +73,7 @@
 
   </form>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+<script src="/js/style.js"></script>
 </body>
 </html>

@@ -1,10 +1,11 @@
 <!-- fragments/header.html -->
 <header th:fragment="mainHeader">
     <div class="user-info">
-        <img src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" alt="Usuário">
-        <span th:text="'Olá, ' + ${nomeUsuario} + '!'">Olá, Usuário!</span>
-
+        <a href="/">
+            <img src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" alt="Usuário">
+        </a>
     </div>
+
     <a href="/mainCliente" >
         <i class="fas fa-user-friends"></i>
         <span>Clientes</span>

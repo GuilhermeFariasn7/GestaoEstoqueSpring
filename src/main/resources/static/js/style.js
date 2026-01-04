@@ -1,89 +1,190 @@
+/* ===============================
+   AÇÕES DE EXCLUSÃO
+================================ */
 document.querySelectorAll('.btn-excluir').forEach(btn => {
-  btn.addEventListener('click', function(event) {
-    event.stopPropagation();
-    const clienteId = this.dataset.id;
-    if (confirm("Tem certeza que deseja excluir este cliente?")) {
-      window.location.href = "/excluirCliente/" + clienteId;
-    }
-  });
+    btn.addEventListener('click', function (event) {
+        event.stopPropagation();
+        const clienteId = this.dataset.id;
+
+        if (confirm("Tem certeza que deseja excluir este cliente?")) {
+            window.location.href = "/excluirCliente/" + clienteId;
+        }
+    });
 });
 
+/* ===============================
+   PREVIEW DE IMAGEM
+================================ */
+function previewImagem(event) {
+    const input = event.target;
+    const preview = document.getElementById('preview');
 
-document.addEventListener("DOMContentLoaded", function() {
-  const mensagens = document.querySelectorAll(".mensagem");
-  const tempoVisivel = 2000;
-  const tempoFade = 200;
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
 
-  mensagens.forEach(msg => {
-    const isSucesso = msg.classList.contains('sucesso');
+        reader.onload = e => {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
 
-    setTimeout(() => {
-      msg.classList.add('fade-out');
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.src = '#';
+        preview.style.display = 'none';
+    }
+}
 
-      setTimeout(() => {
-        msg.remove();
+/* ===============================
+   FILIAIS POR EMPRESA
+================================ */
+function carregarFiliais() {
+    const empresaId = document.getElementById("empresa").value;
+    const filialSelect = document.getElementById("filial");
 
-        if (isSucesso) {
-          const rota = msg.dataset.redirect;
-          if (rota) {
-            window.location.href = rota.trim();
-          }
-        }
+    filialSelect.innerHTML = '<option value="">Selecione a filial</option>';
 
-      }, tempoFade);
+    if (!empresaId) return;
 
-    }, tempoVisivel);
-  });
+    fetch(`/filiais/por-empresa/${empresaId}`)
+        .then(res => res.json())
+        .then(filiais => {
+            filiais.forEach(filial => {
+                const opt = document.createElement("option");
+                opt.value = filial.idfilial;
+                opt.textContent = `${filial.idfilial} - ${filial.nome}`;
+                filialSelect.appendChild(opt);
+            });
+        })
+        .catch(err => console.error("Erro ao carregar filiais:", err));
+}
 
-  const toggleSenha = document.getElementById('toggleSenha');
-  const campoSenha = document.querySelector('input[name="senha"]');
+/* ===============================
+   DOM READY
+================================ */
+document.addEventListener("DOMContentLoaded", function () {
 
-  if (toggleSenha && campoSenha) {
-    toggleSenha.addEventListener('click', function() {
-      const tipo = campoSenha.getAttribute('type') === 'password' ? 'text' : 'password';
-      campoSenha.setAttribute('type', tipo);
+    /* ===== ELEMENTOS ===== */
+    const telefone = document.getElementById("fone");
+    const cep = document.getElementById("cep");
+    const estadoSelect = document.getElementById("estado");
+    const cidadeSelect = document.getElementById("cidade");
 
-      this.classList.toggle('fa-eye');
-      this.classList.toggle('fa-eye-slash');
-    });
-  }
-
-  const toggleConfSenha = document.getElementById('toggleConfSenha');
-  const campoConfSenha = document.querySelector('input[name="confirmaSenha"]');
-
-  if (toggleConfSenha && campoConfSenha) {
-    toggleConfSenha.addEventListener('click', function() {
-      const tipoC = campoConfSenha.getAttribute('type') === 'password' ? 'text' : 'password';
-      campoConfSenha.setAttribute('type', tipoC);
-
-      this.classList.toggle('fa-eye');
-      this.classList.toggle('fa-eye-slash');
-    });
-  }
-
-  // ====== Máscaras usando Inputmask ======
-  if (typeof Inputmask === 'undefined') {
-    console.error('Inputmask não carregado!');
-    return;
-  }
-
-  // Campo CPF/CNPJ com máscara dinâmica
-  const campoCpf = document.querySelector('input[name="cpf"]');
-    if (campoCpf) {
-      Inputmask({
-        mask: ['999.999.999-99', '99.999.999/9999-99'],
-        keepStatic: true,
-        clearIncomplete: true,
-        autoUnmask: false,
-        onincomplete: function() {
-          // opcional: pode mostrar erro ou algo assim
-        }
-      }).mask(campoCpf);
+    /* ===============================
+       MÁSCARAS
+    ================================ */
+    if (telefone) {
+        IMask(telefone, { mask: '(00) 00000-0000' });
     }
 
-  const campoTelefone = document.querySelector('input[name="telefone"]');
-  if (campoTelefone) {
-    Inputmask({"mask": "(99) 99999-9999"}).mask(campoTelefone);
-  }
+    if (cep) {
+        IMask(cep, { mask: '00000-000' });
+    }
+
+    /* ===============================
+       FILTRAR CIDADES POR ESTADO
+    ================================ */
+    function filtrarCidadesPorEstado(estadoId) {
+        Array.from(cidadeSelect.options).forEach(opt => {
+            if (!opt.value) return;
+
+            const estadoCidade = opt.dataset.estado;
+            opt.style.display = estadoCidade === estadoId ? "block" : "none";
+        });
+
+        cidadeSelect.value = "";
+    }
+
+    if (estadoSelect) {
+        estadoSelect.addEventListener("change", function () {
+            if (this.value) {
+                filtrarCidadesPorEstado(this.value);
+            }
+        });
+    }
+
+    /* ===============================
+       BUSCA DE CEP (OPCIONAL)
+    ================================ */
+    if (cep) {
+        cep.addEventListener("blur", function () {
+            const cepLimpo = cep.value.replace(/\D/g, '');
+
+            if (!cepLimpo) return; // CEP NÃO é obrigatório
+
+            if (cepLimpo.length !== 8) {
+                alert("CEP inválido");
+                return;
+            }
+
+            fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.erro) {
+                        alert("CEP não encontrado");
+                        return;
+                    }
+
+                    // Seleciona estado
+                    estadoSelect.value = data.uf;
+                    filtrarCidadesPorEstado(data.uf);
+
+                    // Seleciona cidade correspondente
+                    Array.from(cidadeSelect.options).forEach(opt => {
+                        if (
+                            opt.text.toLowerCase() === data.localidade.toLowerCase() &&
+                            opt.dataset.estado === data.uf
+                        ) {
+                            opt.selected = true;
+                        }
+                    });
+                })
+                .catch(() => alert("Erro ao buscar CEP"));
+        });
+    }
+
+    /* ===============================
+       MENSAGENS DE SUCESSO / ERRO
+    ================================ */
+    const mensagens = document.querySelectorAll(".mensagem");
+    const tempoVisivel = 2000;
+    const tempoFade = 200;
+
+    mensagens.forEach(msg => {
+        const isSucesso = msg.classList.contains('sucesso');
+
+        setTimeout(() => {
+            msg.classList.add('fade-out');
+
+            setTimeout(() => {
+                msg.remove();
+
+                if (isSucesso && msg.dataset.redirect) {
+                    window.location.href = msg.dataset.redirect.trim();
+                }
+            }, tempoFade);
+
+        }, tempoVisivel);
+    });
+
+    /* ===============================
+       TOGGLE SENHA
+    ================================ */
+    function toggleSenha(botaoId, campoName) {
+        const botao = document.getElementById(botaoId);
+        const campo = document.querySelector(`input[name="${campoName}"]`);
+
+        if (!botao || !campo) return;
+
+        botao.addEventListener("click", function () {
+            const tipo = campo.type === "password" ? "text" : "password";
+            campo.type = tipo;
+
+            this.classList.toggle("fa-eye");
+            this.classList.toggle("fa-eye-slash");
+        });
+    }
+
+    toggleSenha("toggleSenha", "senha");
+    toggleSenha("toggleConfSenha", "confirmaSenha");
 
 });
