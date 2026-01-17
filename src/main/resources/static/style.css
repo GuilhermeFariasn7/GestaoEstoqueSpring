@@ -129,6 +129,29 @@ p{
 .logo-header {
   height: 55px;
 }
+.status-badge {
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 12px;
+    display: inline-block;
+    width:100%;
+    text-align: center;
+}
+
+/* Ativo */
+.status-badge.ativo {
+    background-color: #d4f7dc;
+    color: #1e7e34;
+    border: 1px solid #a3e4b5;
+}
+
+/* Inativo */
+.status-badge.inativo {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1aeb5;
+}
+
 .user-info {
   display: flex;
   align-items: center;

@@ -77,12 +77,15 @@ public class ClienteController {
     }
 
     @GetMapping("/novoCliente")
-    public String novoCliente(Model model) {
+    public String novoCliente(HttpSession session,Model model) {
         model.addAttribute("tipoUsuarios", tipoUsuarioRepository.findAll());
         model.addAttribute("empresas", empresaRepository.findAll());
         model.addAttribute("estados", estadoRepository.findAll());
         model.addAttribute("cidades", cidadeRepository.findAll());
         model.addAttribute("ramos", ramoRepository.findAll());
+        if (!isUsuarioLogado(session)) {
+            return "redirect:/login";
+        }
         return "novoCliente";
     }
 
@@ -348,6 +351,9 @@ public class ClienteController {
         return "editarCliente";
     }
 
+    private boolean isUsuarioLogado(HttpSession session) {
+        return session != null && session.getAttribute("usuarioLogado") != null;
+    }
 
     private String erroCliente(
             Model model,

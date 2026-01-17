@@ -46,33 +46,70 @@
                         <tr>
                             <th></th>
                             <th>Código</th>
+                            <th>Imagem</th>
                             <th>Nome</th>
-                            <th>CPF</th>
-                            <th>Telefone</th>
-                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Grupo</th>
+                            <th>Unidade</th>
+                            <th>Estoque Atual</th>
+                            <th>Est. Máx</th>
+                            <th>Est. Mín</th>
                             <th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="cliente : ${clientes}"
-                            th:onclick="'window.location.href=\'/editarCliente/' + ${cliente.id} + '\';'"
-                            th:classappend="${cliente.status == 'Inativo'} ? 'linha-inativa' : ''"
+                        <tr th:each="produto : ${produtos}"
+                            th:onclick="'window.location.href=\'/editarProduto/' + ${produto.id} + '\';'"
+                            th:classappend="${!produto.ativo} ? 'linha-inativa' : ''"
                             style="cursor:pointer;">
+
+                            <!-- EXCLUIR -->
                             <td class="col-excluir">
-                                <button type="button" class="btn-excluir" th:attr="data-id=${cliente.id}">
+                                <button type="button" class="btn-excluir" th:attr="data-id=${produto.id}">
                                     <i class="fas fa-trash"></i>
                                 </button>
-
                             </td>
-                            <td th:text="${cliente.id}">0</td>
-                            <td th:text="${cliente.nome}">-</td>
-                            <td th:text="${cliente.cpf}">-</td>
-                            <td th:text="${cliente.telefone}">-</td>
-                            <td th:text="${cliente.email}">-</td>
-                            <td th:text="${cliente.status}">-</td>
+
+                            <!-- ID -->
+                            <td th:text="${produto.id}">0</td>
+
+                            <!-- IMAGEM -->
+                            <td>
+                                <img th:src="@{'/produto/imagem/' + ${produto.id}}"
+                                     width="80"
+                                     height="80"
+                                     style="object-fit:cover;border-radius:8px"
+                                     onerror="this.src='/img/SEMIMAGEM.jpg'" />
+                            </td>
+
+                            <!-- NOME -->
+                            <td th:text="${produto.nome}">-</td>
+
+                            <!-- TIPO -->
+                            <td th:text="${produto.tipo}">-</td>
+
+                            <!-- GRUPO -->
+                            <td th:text="${produto.grupo}">-</td>
+
+                            <!-- UNIDADE -->
+                            <td th:text="${produto.unidadeMedida}">-</td>
+
+                            <!-- ESTOQUES -->
+                            <td th:text="${#numbers.formatDecimal(produto.estoqueAtual, 1, 'POINT', 3, 'NONE')}">0</td>
+                            <td th:text="${#numbers.formatDecimal(produto.estoqueMaximo, 1, 'POINT', 3, 'NONE')}">0</td>
+                            <td th:text="${#numbers.formatDecimal(produto.estoqueMinimo, 1, 'POINT', 3, 'NONE')}">0</td>
+
+                            <!-- STATUS -->
+                            <td>
+                                <span th:text="${produto.ativo ? 'ATIVO' : 'INATIVO'}"
+                                      th:classappend="${produto.ativo} ? 'status-badge ativo' : 'status-badge inativo'">
+                                </span>
+                            </td>
+
                         </tr>
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>

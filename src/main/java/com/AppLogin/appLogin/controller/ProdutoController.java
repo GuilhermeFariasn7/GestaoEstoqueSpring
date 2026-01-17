@@ -2,9 +2,11 @@ package com.AppLogin.appLogin.controller;
 
 import com.AppLogin.appLogin.dto.ProdutoDTO;
 import com.AppLogin.appLogin.model.Usuario;
+import com.AppLogin.appLogin.repository.*;
 import com.AppLogin.appLogin.service.ProdutoService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,12 +28,35 @@ public class ProdutoController {
 
     private final ProdutoService produtoService;
 
+    @Autowired
+    private ClienteRepository clienteRepository;
+
+    @Autowired
+    private TipoUsuarioRepository tipoUsuarioRepository;
+
+    @Autowired
+    private EmpresaRepository empresaRepository;
+
+    @Autowired
+    private FilialRepository filialRepository;
+
+    @Autowired
+    private EstadoRepository estadoRepository;
+
+    @Autowired
+    private CidadeRepository cidadeRepository;
+
+    @Autowired
+    private RamoRepository ramoRepository;
+
     public ProdutoController(ProdutoService produtoService) {
         this.produtoService = produtoService;
     }
 
     @GetMapping("/novoProduto")
     public String novoProduto(HttpSession session, Model model) {
+        model.addAttribute("tipoUsuarios", tipoUsuarioRepository.findAll());
+        model.addAttribute("empresas", empresaRepository.findAll());
         if (!isUsuarioLogado(session)) {
             return "redirect:/login";
         }
@@ -44,19 +69,51 @@ public class ProdutoController {
     }
 
     @GetMapping("/mainProduto")
-    public String mainProduto(HttpSession session, Model model) {
+    public String mainProduto(
+            HttpSession session,
+            Model model,
+            @RequestParam(required = false) Long codigo,
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String grupo
+    ) {
         if (!isUsuarioLogado(session)) {
             return "redirect:/login";
         }
 
-        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
-        model.addAttribute("nomeUsuario", usuario.getNome());
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
-        List<ProdutoDTO> produtos = produtoService.listarTodosProdutos();
-        model.addAttribute("produtos", produtos);
+        // ==========================
+        // DADOS DO HEADER (IGUAL CLIENTE)
+        // ==========================
+        model.addAttribute("nomeUsuario", usuarioLogado.getNome());
+        model.addAttribute("empresaUsuario", usuarioLogado.getEmpresa().getNome());
+        model.addAttribute("filialUsuario", usuarioLogado.getFilial().getNome());
+        model.addAttribute("empresaId", usuarioLogado.getEmpresa().getIdempresa());
+        model.addAttribute("filialId", usuarioLogado.getFilial().getIdfilial());
+
+        // ==========================
+        // FILTRO
+        // ==========================
+        List<ProdutoDTO> produtos;
+
+        /*if (codigo != null) {
+            produtos = produtoService.buscarPorIdLista(codigo); // você cria isso
+        } else if (nome != null && !nome.isBlank()) {
+            produtos = produtoService.buscarPorNome(nome);
+        } else if (tipo != null && !tipo.isBlank()) {
+            produtos = produtoService.buscarPorTipo(tipo);
+        } else if (grupo != null && !grupo.isBlank()) {
+            produtos = produtoService.buscarPorGrupo(grupo);
+        } else {
+            produtos = produtoService.listarTodosProdutos();
+        }*/
+
+        /*model.addAttribute("produtos", produtos);*/
 
         return "mainProduto";
     }
+
 
     @PostMapping("/salvarProduto")
     public String salvarProduto(
