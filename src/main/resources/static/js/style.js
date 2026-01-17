@@ -143,6 +143,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /* ===============================
+       MÁSCARA CPF / CNPJ DINÂMICA
+    ================================ */
+    const cpfInput = document.getElementById("cpf");
+    const cnpjInput = document.getElementById("cnpj");
+
+    if (cpfInput) {
+        IMask(cpfInput, { mask: '000.000.000-00' });
+    }
+
+    if (cnpjInput) {
+        IMask(cnpjInput, { mask: '00.000.000/0000-00' });
+    }
+
+    /* ===============================
        MENSAGENS DE SUCESSO / ERRO
     ================================ */
     const mensagens = document.querySelectorAll(".mensagem");

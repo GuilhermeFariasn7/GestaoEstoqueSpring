@@ -17,63 +17,156 @@
 </head>
 <body>
 
-<header>
-  <a href="/mainCliente" class="btn btn-secundario">
-    <i class="fas fa-arrow-left"></i> Voltar
-  </a>
-  Editar Cliente
+<header class="header-return">
+  <div class="header-btn-voltar">
+    <a href="/mainCliente" class="btn btn-secundario">
+      <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+  </div>
+  <div class="header-title">
+    <i class="fas fa-address-card"></i> <h2>Edição de cliente</h2>
+  </div>
 </header>
 
 <div class="login-box">
   <form action="/atualizarCliente" method="post">
+
+    <!-- Mensagens -->
     <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
     <div th:if="${sucesso}"
          class="mensagem sucesso"
          th:text="${sucesso}"
          th:attr="data-redirect=${rotaRedirect}"></div>
-    <!-- Campo oculto para o ID do cliente -->
+
+    <!-- ID oculto -->
     <input type="hidden" name="id" th:value="${cliente.id}"/>
 
+    <!-- Nome -->
     <div class="input-group">
       <i class="fas fa-user"></i>
-      <input type="text" name="nome" placeholder="Nome completo" required
+      <input type="text" name="nome" placeholder="Nome do cliente" required
              th:value="${cliente.nome}"/>
     </div>
 
+    <!-- CPF -->
     <div class="input-group">
       <i class="fas fa-id-card"></i>
-      <input type="text" name="cpf" placeholder="CPF" required
+      <input type="text" name="cpf" placeholder="CPF"
              th:value="${cliente.cpf}"/>
     </div>
 
+    <!-- CNPJ -->
+    <div class="input-group">
+      <i class="fas fa-building"></i>
+      <input type="text" name="cnpj" placeholder="CNPJ"
+             th:value="${cliente.cnpj}"/>
+    </div>
+
+    <!-- Telefone -->
     <div class="input-group">
       <i class="fas fa-phone"></i>
       <input type="text" name="telefone" placeholder="Telefone"
              th:value="${cliente.telefone}"/>
     </div>
 
+    <!-- Email -->
     <div class="input-group">
       <i class="fas fa-envelope"></i>
-      <input type="email" name="email" placeholder="Email"
+      <input type="email" name="email" placeholder="E-mail"
              th:value="${cliente.email}"/>
     </div>
 
+    <!-- Tipo -->
     <div class="input-group">
-      <i class="fas fa-toggle-on"></i>
-      <select name="status" required>
-        <option value="" disabled>Selecione o status</option>
-        <option value="Ativo" th:selected="${cliente.status == 'Ativo'}">Ativo</option>
-        <option value="Inativo" th:selected="${cliente.status == 'Inativo'}">Inativo</option>
+      <i class="fas fa-tags"></i>
+      <input type="text" name="tipo" placeholder="Tipo de cliente"
+             th:value="${cliente.tipo}"/>
+    </div>
+
+    <!-- Descrição -->
+    <div class="input-group">
+      <i class="fas fa-align-left"></i>
+      <input type="text" name="descricao" placeholder="Descrição"
+             th:value="${cliente.descricao}"/>
+    </div>
+
+    <!-- Ramo -->
+    <div class="input-group">
+      <i class="fas fa-sitemap"></i>
+      <select name="ramoId" required>
+        <option value="">Selecione o ramo</option>
+        <option th:each="ramo : ${ramos}"
+                th:value="${ramo.idramo}"
+                th:text="${ramo.idramo + ' - ' + ramo.nome}"
+                th:selected="${ramo.idramo == cliente.ramo.idramo}">
+        </option>
       </select>
     </div>
 
+    <!-- Estado -->
+    <div class="input-group">
+      <i class="fas fa-map"></i>
+      <select id="estado" name="estado" required>
+        <option value="">Selecione o estado</option>
+        <option th:each="estado : ${estados}"
+                th:value="${estado.idestado}"
+                th:text="${estado.idestado + ' - ' + estado.descricao}"
+                th:selected="${estado.idestado == cliente.cidade.estado.idestado}">
+        </option>
+      </select>
+    </div>
+
+    <!-- Cidade -->
+    <div class="input-group">
+      <i class="fas fa-city"></i>
+      <select id="cidade" name="cidade" required>
+        <option value="">Selecione a cidade</option>
+        <option th:each="cidade : ${cidades}"
+                th:value="${cidade.idcidade}"
+                th:text="${cidade.nome}"
+                th:attr="data-estado=${cidade.estado.idestado}"
+                th:selected="${cidade.idcidade == cliente.cidade.idcidade}">
+        </option>
+      </select>
+    </div>
+
+    <!-- Entrega programada -->
+    <div class="input-group">
+      <i class="fas fa-truck"></i>
+      <select name="entregaProgramada">
+        <option value="0" th:selected="${cliente.entregaProgramada == 0}">Entrega não programada</option>
+        <option value="1" th:selected="${cliente.entregaProgramada == 1}">Entrega programada</option>
+      </select>
+    </div>
+
+    <!-- Dias entrega -->
+    <div class="input-group">
+      <i class="fas fa-calendar-days"></i>
+      <input type="number" name="diasEntregaProgramada"
+             placeholder="Dias para entrega"
+             th:value="${cliente.diasEntregaProgramada}"/>
+    </div>
+
+    <!-- Status -->
+    <div class="input-group">
+      <i class="fas fa-toggle-on"></i>
+      <select name="status" required>
+        <option value="">Selecione o status</option>
+        <option value="ATIVO" th:selected="${cliente.status == 'ATIVO'}">Ativo</option>
+        <option value="INATIVO" th:selected="${cliente.status == 'INATIVO'}">Inativo</option>
+      </select>
+    </div>
+
+    <!-- Botão -->
     <button type="submit" class="btn btn-primary">
       <i class="fas fa-save"></i> Atualizar
     </button>
 
   </form>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
-<script src="/js/style.js"></script>
+<script th:src="@{/js/style.js}"></script>
+
 </body>
 </html>
