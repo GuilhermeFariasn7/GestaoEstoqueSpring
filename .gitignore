@@ -31,3 +31,22 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Variáveis de ambiente e credenciais
+.env.local
+.run-local.bat
+*.env
+.secret
+config/application-*.properties
+
+# Diretório de uploads
+uploads/
+/tmp/
+
+# Logs
+*.log
+logs/
+
+# Sistema
+.DS_Store
+Thumbs.db
