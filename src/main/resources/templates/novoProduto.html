@@ -17,16 +17,19 @@
 </head>
 <body>
 
-<header>
-    <a href="/mainProduto" class="btn btn-secundario">
-        <i class="fas fa-arrow-left"></i> Voltar
-    </a>
+<header class="header-return">
+    <div class="header-btn-voltar">
+        <a href="/mainCliente" class="btn btn-secundario">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+    <div class="header-title">
+        <i class="fa-solid fa-boxes-packing"></i> <h2>Cadastro de produto</h2>
+    </div>
 </header>
-
 <div class="edit-box">
 
-    <!-- FORM ÚNICO E CORRETO -->
-    <form action="/salvarProduto" method="post" th:object="${produto}">
+    <form class="form-produto" action="/salvarProduto" method="post" th:object="${produto}">
 
         <!--<div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
         <div th:if="${sucesso}"
@@ -35,128 +38,106 @@
              th:attr="data-redirect=${rotaRedirect}"></div>-->
 
         <p>Informe os dados a seguir para inclusão</p>
+        <div class="edit-box-campos">
+            <div class="divImgProduto">
+                <p>Imagem do Produto</p>
+                <br>
+                <img id="preview" src="#" alt="Preview da Imagem" class="imgProduto" style="display:none;"/>
 
-        <!--<div class="divImgProduto">
-            <p>Imagem do Produto</p>
-            <br>
-            <img id="preview" src="#" alt="Preview da Imagem" class="imgProduto" style="display:none;"/>
+                <input type="file" id="imagem" name="imagem" accept="image/*" onchange="previewImagem(event)"
+                       style="display:none"/>
 
-            &lt;!&ndash; Input file escondido &ndash;&gt;
-            <input type="file" id="imagem" name="imagem" accept="image/*" onchange="previewImagem(event)"
-                   style="display:none"/>
+                <button type="button" class="btn-anexar" onclick="document.getElementById('imagem').click()">
+                    <i class="fas fa-upload"></i> Adicionar Imagem
+                </button>
+            </div>
 
-            &lt;!&ndash; Botão customizado &ndash;&gt;
-            <button type="button" class="btn-anexar" onclick="document.getElementById('imagem').click()">
-                <i class="fas fa-upload"></i> Adicionar Imagem
-            </button>
-        </div>-->
+            <div class="input-group">
+                <i class="fas fa-tag"></i>
+                <input type="text" th:field="*{nome}" placeholder="Nome do produto" required/>
+                <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="erro-validacao"></small>
+            </div>
 
-        <!-- Campos com th:field -->
-        <div class="input-group">
-            <i class="fas fa-tag"></i>
-            <input type="text" th:field="*{nome}" placeholder="Nome do produto" required/>
-            <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="erro-validacao"></small>
+            <div class="input-group">
+                <i class="fas fa-file-alt"></i>
+                <input type="text" th:field="*{descricao}" placeholder="Descrição"/>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-list"></i>
+                <input type="text" th:field="*{tipo}" placeholder="Tipo"/>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-layer-group"></i>
+                <input type="text" th:field="*{grupo}" placeholder="Grupo"/>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-barcode"></i>
+                <input type="text" th:field="*{codigoBarras}" placeholder="Código de Barras"/>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-ruler"></i>
+                <input type="text" th:field="*{unidadeMedida}" placeholder="Unidade de Medida"/>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-dollar-sign"></i>
+                <input type="number" step="0.01" min="0" th:field="*{precoCusto}" placeholder="Preço de Custo"/>
+                <small th:if="${#fields.hasErrors('precoCusto')}" th:errors="*{precoCusto}" class="erro-validacao"></small>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-dollar-sign"></i>
+                <input type="number" step="0.01" min="0" th:field="*{precoVenda}" placeholder="Preço de Venda"/>
+                <small th:if="${#fields.hasErrors('precoVenda')}" th:errors="*{precoVenda}" class="erro-validacao"></small>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-boxes"></i>
+                <input type="number" step="0.01" min="0" th:field="*{estoqueAtual}" placeholder="Estoque Atual"/>
+                <small th:if="${#fields.hasErrors('estoqueAtual')}" th:errors="*{estoqueAtual}" class="erro-validacao"></small>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-box-open"></i>
+                <input type="number" step="0.01" min="0" th:field="*{estoqueMinimo}" placeholder="Estoque Mínimo"/>
+            </div>
+
+            <div class="input-group">
+                <i class="fas fa-box-open"></i>
+                <input type="number" step="0.01" min="0" th:field="*{estoqueMaximo}" placeholder="Estoque Máximo"/>
+            </div>
+
+            <!-- REMOVER ou CORRIGIR o campo dataCadastro -->
+            <!--
+            <div class="input-group">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="datetime-local" th:field="*{dataCadastro}"/>
+            </div>
+            -->
+
+            <div class="input-group">
+                <i class="fas fa-toggle-on"></i>
+                <select th:field="*{ativo}" required>
+                    <option value="" disabled selected>Selecione o status</option>
+                    <option value="true">Ativo</option>
+                    <option value="false">Inativo</option>
+                </select>
+            </div>
         </div>
-
-        <div class="input-group">
-            <i class="fas fa-file-alt"></i>
-            <input type="text" th:field="*{descricao}" placeholder="Descrição"/>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-list"></i>
-            <input type="text" th:field="*{tipo}" placeholder="Tipo"/>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-layer-group"></i>
-            <input type="text" th:field="*{grupo}" placeholder="Grupo"/>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-barcode"></i>
-            <input type="text" th:field="*{codigoBarras}" placeholder="Código de Barras"/>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-ruler"></i>
-            <input type="text" th:field="*{unidadeMedida}" placeholder="Unidade de Medida"/>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-dollar-sign"></i>
-            <input type="number" step="0.01" min="0" th:field="*{precoCusto}" placeholder="Preço de Custo"/>
-            <small th:if="${#fields.hasErrors('precoCusto')}" th:errors="*{precoCusto}" class="erro-validacao"></small>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-dollar-sign"></i>
-            <input type="number" step="0.01" min="0" th:field="*{precoVenda}" placeholder="Preço de Venda"/>
-            <small th:if="${#fields.hasErrors('precoVenda')}" th:errors="*{precoVenda}" class="erro-validacao"></small>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-boxes"></i>
-            <input type="number" step="0.01" min="0" th:field="*{estoqueAtual}" placeholder="Estoque Atual"/>
-            <small th:if="${#fields.hasErrors('estoqueAtual')}" th:errors="*{estoqueAtual}" class="erro-validacao"></small>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-box-open"></i>
-            <input type="number" step="0.01" min="0" th:field="*{estoqueMinimo}" placeholder="Estoque Mínimo"/>
-        </div>
-
-        <div class="input-group">
-            <i class="fas fa-box-open"></i>
-            <input type="number" step="0.01" min="0" th:field="*{estoqueMaximo}" placeholder="Estoque Máximo"/>
-        </div>
-
-        <!-- REMOVER ou CORRIGIR o campo dataCadastro -->
-        <!--
-        <div class="input-group">
-            <i class="fas fa-calendar-alt"></i>
-            <input type="datetime-local" th:field="*{dataCadastro}"/>
-        </div>
-        -->
-
-        <div class="input-group">
-            <i class="fas fa-toggle-on"></i>
-            <select th:field="*{ativo}" required>
-                <option value="" disabled selected>Selecione o status</option>
-                <option value="true">Ativo</option>
-                <option value="false">Inativo</option>
-            </select>
-        </div>
-
         <div class="btnFooter">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-save"></i> Salvar
             </button>
         </div>
-
     </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="/js/style.js"></script>
-
-<script>
-    function previewImagem(event) {
-        const input = event.target;
-        const preview = document.getElementById('preview');
-
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            }
-
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>
 
 </body>
 </html>
