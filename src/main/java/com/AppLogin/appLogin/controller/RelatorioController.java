@@ -1,4 +1,4 @@
 package com.AppLogin.appLogin.controller;
 
-public class RelatórioController {
+public class RelatorioController {
 }
