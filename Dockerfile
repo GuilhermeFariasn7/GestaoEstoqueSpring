@@ -1,12 +1,31 @@
-FROM maven:3.8.4-openjdk-17 AS build
+# Etapa 1: Build da aplicação
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+# Copiar arquivos de configuração
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
+
+# Dar permissão e baixar dependências
+RUN chmod +x mvnw
+RUN ./mvnw dependency:go-offline
+
+# Copiar código fonte
+COPY src ./src
+
+# Compilar
+RUN ./mvnw clean package -DskipTests
+
+# Etapa 2: Imagem final
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
+
+# Copiar JAR da etapa de build
 COPY --from=build /app/target/*.jar app.jar
+
+# Porta
 EXPOSE 8080
+
+# Comando para rodar
 ENTRYPOINT ["java", "-jar", "app.jar"]
