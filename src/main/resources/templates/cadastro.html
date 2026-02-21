@@ -2,6 +2,7 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Gestão de Estoque</title>
 
     <!-- Pré-conexão para melhorar performance -->
@@ -19,10 +20,6 @@
 <body>
 <div class="login-box">
 
-    <div class="login-box-imglogo">
-        <img class="logo" src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" alt="Logo"/>
-    </div>
-
     <h2>Preencha os dados abaixo para finalizar seu cadastro no sistema.</h2>
 
     <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
@@ -32,114 +29,115 @@
          th:attr="data-redirect=${rotaRedirect}">
     </div>
 
-    <form method="post" action="/CadastroUsuario">
-        <!-- TIPO DE USUARIO -->
-        <div class="input-group">
-            <select id="tipoUsuarioId" name="tipoUsuarioId" required>
-                <option value="">Selecione o tipo do usuário</option>
-                <option th:each="tipoUsuario : ${tipoUsuarios}"
-                        th:value="${tipoUsuario.idtipoUsuario}"
-                        th:text="${tipoUsuario.idtipoUsuario + ' - ' + tipoUsuario.nome}">
-                </option>
-            </select>
-            <i class="fas fa-user-shield"></i>
-        </div>
-        <!-- EMPRESA -->
-        <div class="input-group">
-            <select id="empresa" name="empresa" onchange="carregarFiliais()" required>
-                <option value="">Selecione a empresa</option>
-                <option th:each="empresa : ${empresas}"
-                        th:value="${empresa.idempresa}"
-                        th:text="${empresa.idempresa + ' - ' + empresa.nome}">
-                </option>
-            </select>
-            <i class="fas fa-building"></i>
-        </div>
+    <form method="post" action="/CadastroUsuario" id="cadastro-form">
+        <div class="cadastro-campos-scroll">
+            <!-- TIPO DE USUARIO -->
+            <div class="input-group">
+                <select id="tipoUsuarioId" name="tipoUsuarioId" required>
+                    <option value="">Selecione o tipo do usuário</option>
+                    <option th:each="tipoUsuario : ${tipoUsuarios}"
+                            th:value="${tipoUsuario.idtipoUsuario}"
+                            th:text="${tipoUsuario.idtipoUsuario + ' - ' + tipoUsuario.nome}">
+                    </option>
+                </select>
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <!-- EMPRESA -->
+            <div class="input-group">
+                <select id="empresa" name="empresa" onchange="carregarFiliais()" required>
+                    <option value="">Selecione a empresa</option>
+                    <option th:each="empresa : ${empresas}"
+                            th:value="${empresa.idempresa}"
+                            th:text="${empresa.idempresa + ' - ' + empresa.nome}">
+                    </option>
+                </select>
+                <i class="fas fa-building"></i>
+            </div>
 
-        <!-- FILIAL -->
-        <div class="input-group">
-            <select id="filial" name="filial" required>
-                <option value="">Selecione a filial</option>
-            </select>
+            <!-- FILIAL -->
+            <div class="input-group">
+                <select id="filial" name="filial" required>
+                    <option value="">Selecione a filial</option>
+                </select>
 
-            <i class="fas fa-code-branch"></i>
-        </div>
+                <i class="fas fa-code-branch"></i>
+            </div>
 
-        <!-- NOME -->
-        <div class="input-group">
-            <input type="text" name="nome" placeholder="Nome completo"
-                   th:value="${nome}" required/>
-            <i class="fas fa-user"></i>
-        </div>
+            <!-- NOME -->
+            <div class="input-group">
+                <input type="text" name="nome" placeholder="Nome completo"
+                       th:value="${nome}" required/>
+                <i class="fas fa-user"></i>
+            </div>
 
-        <!-- LOGIN -->
-        <div class="input-group">
-            <input type="text" name="login" placeholder="Login de acesso"
-                   th:value="${login}" required/>
-            <i class="fas fa-id-badge"></i>
-        </div>
+            <!-- LOGIN -->
+            <div class="input-group">
+                <input type="text" name="login" placeholder="Login de acesso"
+                       th:value="${login}" required/>
+                <i class="fas fa-id-badge"></i>
+            </div>
 
-        <!-- EMAIL -->
-        <div class="input-group">
-            <input type="email" name="email" placeholder="Email"
-                   th:value="${email}" required/>
-            <i class="fas fa-envelope"></i>
-        </div>
-        <!-- SENHA -->
-        <div class="input-group">
-            <input type="password" name="senha" placeholder="Senha" required/>
-            <a><i id="toggleSenha" class="fas fa-eye"></i></a>
-            <i class="fas fa-lock"></i>
-        </div>
+            <!-- EMAIL -->
+            <div class="input-group">
+                <input type="email" name="email" placeholder="Email"
+                       th:value="${email}" required/>
+                <i class="fas fa-envelope"></i>
+            </div>
+            <!-- SENHA -->
+            <div class="input-group">
+                <input type="password" name="senha" placeholder="Senha" required/>
+                <a><i id="toggleSenha" class="fas fa-eye"></i></a>
+                <i class="fas fa-lock"></i>
+            </div>
 
-        <!-- CONFIRMAR SENHA -->
-        <div class="input-group">
-            <input type="password" name="confirmaSenha" placeholder="Confirmar senha" required/>
-            <a><i id="toggleConfSenha" class="fas fa-eye"></i></a>
-            <i class="fas fa-lock"></i>
-        </div>
+            <!-- CONFIRMAR SENHA -->
+            <div class="input-group">
+                <input type="password" name="confirmaSenha" placeholder="Confirmar senha" required/>
+                <a><i id="toggleConfSenha" class="fas fa-eye"></i></a>
+                <i class="fas fa-lock"></i>
+            </div>
 
-        <!-- TELEFONE -->
-        <div class="input-group">
-            <input id="fone" type="tel" name="telefone" placeholder="Telefone"
-                   th:value="${telefone}"/>
-            <i class="fas fa-phone"></i>
-        </div>
-        <!-- CEP -->
-        <div class="input-group">
-            <input type="text" id="cep" name="cep" placeholder="CEP">
-            <i class="fas fa-location-dot"></i>
-        </div>
-        <!-- ESTADO -->
-        <div class="input-group">
-            <select id="estado" name="estado" required>
-                <option value="">Selecione o estado</option>
-                <option th:each="estado : ${estados}"
-                        th:value="${estado.idestado}"
-                        th:text="${estado.idestado + ' - ' + estado.descricao}">
-                </option>
-            </select>
-            <i class="fas fa-map"></i>
-        </div>
-        <!-- CIDADE -->
-        <div class="input-group">
-            <select id="cidade" name="cidade" required>
-                <option value="">Selecione a cidade</option>
-                <option th:each="cidade : ${cidades}"
-                        th:value="${cidade.idcidade}"
-                        th:text="${cidade.nome}"
-                        th:attr="data-estado=${cidade.estado.idestado}">
-            </select>
-            <i class="fas fa-city"></i>
-        </div>
+            <!-- TELEFONE -->
+            <div class="input-group">
+                <input id="fone" type="tel" name="telefone" placeholder="Telefone"
+                       th:value="${telefone}"/>
+                <i class="fas fa-phone"></i>
+            </div>
+            <!-- CEP -->
+            <div class="input-group">
+                <input type="text" id="cep" name="cep" placeholder="CEP">
+                <i class="fas fa-location-dot"></i>
+            </div>
+            <!-- ESTADO -->
+            <div class="input-group">
+                <select id="estado" name="estado" required>
+                    <option value="">Selecione o estado</option>
+                    <option th:each="estado : ${estados}"
+                            th:value="${estado.idestado}"
+                            th:text="${estado.idestado + ' - ' + estado.descricao}">
+                    </option>
+                </select>
+                <i class="fas fa-map"></i>
+            </div>
+            <!-- CIDADE -->
+            <div class="input-group">
+                <select id="cidade" name="cidade" required>
+                    <option value="">Selecione a cidade</option>
+                    <option th:each="cidade : ${cidades}"
+                            th:value="${cidade.idcidade}"
+                            th:text="${cidade.nome}"
+                            th:attr="data-estado=${cidade.estado.idestado}">
+                </select>
+                <i class="fas fa-city"></i>
+            </div>
 
-        <button type="submit">Cadastrar</button>
+        </div>
     </form>
-
-    <div class="options">
+    <!-- Footer fixo com botão salvar -->
+    <div class="cadastro-footer">
+        <button type="submit" form="cadastro-form">Salvar</button>
         <a th:href="@{/login}">Já possui conta? Entrar</a>
     </div>
-
 </div>
 <script src="https://unpkg.com/imask"></script>
 <script th:src="@{/js/style.js}"></script>
