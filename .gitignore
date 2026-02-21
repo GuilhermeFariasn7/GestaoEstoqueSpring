@@ -38,7 +38,7 @@ build/
 *.env
 .secret
 config/application-*.properties
-
+application-local.properties
 # Diretório de uploads
 uploads/
 /tmp/
