@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Consulta de Clientes - Gestão de Estoque</title>
 
         <!-- Google Fonts + Libertinus -->
@@ -17,70 +19,93 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     </head>
     <body class="with-header">
-        <div th:replace="fragments/header :: mainHeader"></div>
-        <div class="container">
-            <form class="mainFiltro" method="get" action="/mainCliente">
-                <div class="input-group">
-                    <input type="number" name="codigo" placeholder="Buscar por código" th:value="${param.codigo}">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <div class="input-group">
-                    <input type="text" name="nome" placeholder="Buscar por nome" th:value="${param.nome}">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <div class="input-group">
-                    <input type="text" name="cpf" placeholder="Buscar por CPF" th:value="${param.cpf}">
-                    <i class="fas fa-envelope"></i>
-                </div>
 
-                <button type="submit" class="btn">
-                    <i class="fas fa-search"></i> Buscar
-                </button>
-            </form>
+        <header><div th:replace="fragments/header :: mainHeader"></div></header>
+        <main class="page-content">
+            <div class="container">
+                <form class="mainFiltro" method="get" action="/mainCliente">
+                    <div class="input-group">
+                        <input type="number" name="codigo" placeholder="Buscar por código" th:value="${param.codigo}">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="nome" placeholder="Buscar por nome" th:value="${param.nome}">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="cpf" placeholder="Buscar por CPF" th:value="${param.cpf}">
+                        <i class="fas fa-envelope"></i>
+                    </div>
 
-            <div class="tabela">
-                <!-- Tabela -->
-                <div class="tabela-wrapper">
-                    <table class="tabela-clientes">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Código</th>
-                            <th>Nome</th>
-                            <th>CPF</th>
-                            <th>Telefone</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="cliente : ${clientes}"
-                            th:onclick="'window.location.href=\'/editarCliente/' + ${cliente.id} + '\';'"
-                            th:classappend="${cliente.status == 'Inativo'} ? 'linha-inativa' : ''"
-                            style="cursor:pointer;">
-                            <td class="col-excluir">
-                                <button type="button" class="btn-excluir" th:attr="data-id=${cliente.id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                    <button type="submit" class="btn">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </form>
 
-                            </td>
-                            <td th:text="${cliente.id}">0</td>
-                            <td th:text="${cliente.nome}">-</td>
-                            <td th:text="${cliente.cpf}">-</td>
-                            <td th:text="${cliente.telefone}">-</td>
-                            <td th:text="${cliente.email}">-</td>
-                            <td th:text="${cliente.status}">-</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="tabela">
+                    <!-- Tabela -->
+                    <div class="tabela-wrapper">
+                        <table class="tabela-clientes">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Código</th>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Telefone</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="cliente : ${clientes}"
+                                th:onclick="'window.location.href=\'/editarCliente/' + ${cliente.id} + '\';'"
+                                th:classappend="${cliente.status == 'Inativo'} ? 'linha-inativa' : ''"
+                                style="cursor:pointer;">
+                                <td class="col-excluir">
+                                    <button type="button" class="btn-excluir" th:attr="data-id=${cliente.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                </td>
+                                <td th:text="${cliente.id}">0</td>
+                                <td th:text="${cliente.nome}">-</td>
+                                <td th:text="${cliente.cpf}">-</td>
+                                <td th:text="${cliente.telefone}">-</td>
+                                <td th:text="${cliente.email}">-</td>
+                                <td th:text="${cliente.status}">-</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="c-cards">
+                    <div class="c-card" th:each="cliente : ${clientes}">
+                        <strong th:text="${cliente.nome}"></strong>
+
+                        <span>Código: <b th:text="${cliente.id}"></b></span>
+                        <span>CPF: <b th:text="${cliente.cpf}"></b></span>
+                        <span>Telefone: <b th:text="${cliente.telefone}"></b></span>
+                        <span>Status: <b th:text="${cliente.status}"></b></span>
+
+                        <div class="card-acoes">
+                            <a th:href="@{/editarCliente/{id}(id=${cliente.id})}">
+                                <i class="fas fa-pen"></i>
+                            </a>
+
+                            <button class="btn-excluir" th:attr="data-id=${cliente.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-    <!-- Botão Flutuante -->
-    <a href="/novoCliente" class="botaoFlutuante" title="Incluir novo cliente">
-        <i class="fas fa-plus"></i>
-    </a>
+        <!-- Botão Flutuante -->
+        <a href="/novoCliente" class="botaoFlutuante" title="Incluir novo cliente">
+            <i class="fas fa-plus"></i>
+        </a>
+    </main>
     <script th:src="@{/js/style.js}"></script>
     </body>
 </html>

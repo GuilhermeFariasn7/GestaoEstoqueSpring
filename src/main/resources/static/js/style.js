@@ -68,6 +68,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const cep = document.getElementById("cep");
     const estadoSelect = document.getElementById("estado");
     const cidadeSelect = document.getElementById("cidade");
+    const btn = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".nav-links");
+
+    if(btn){
+        btn.addEventListener("click", () => {
+            menu.classList.toggle("active");
+        });
+    }
 
     /* ===============================
        MÁSCARAS
