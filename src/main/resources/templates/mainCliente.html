@@ -49,9 +49,10 @@
                             <thead>
                             <tr>
                                 <th></th>
+                                <th></th>
                                 <th>Código</th>
                                 <th>Nome</th>
-                                <th>CPF</th>
+                                <th>CPF/CNPJ</th>
                                 <th>Telefone</th>
                                 <th>Email</th>
                                 <th>Status</th>
@@ -68,9 +69,10 @@
                                     </button>
 
                                 </td>
+                                <td><img th:src="@{/img/no-image.jpg}"></td>
                                 <td th:text="${cliente.id}">0</td>
                                 <td th:text="${cliente.nome}">-</td>
-                                <td th:text="${cliente.cpf}">-</td>
+                                <td th:text="${#strings.isEmpty(cliente.cpf) ? cliente.cnpj : cliente.cpf}">-</td>
                                 <td th:text="${cliente.telefone}">-</td>
                                 <td th:text="${cliente.email}">-</td>
                                 <td th:text="${cliente.status}">-</td>
@@ -79,25 +81,46 @@
                         </table>
                     </div>
                 </div>
-                <div class="c-cards">
-                    <div class="c-card" th:each="cliente : ${clientes}">
-                        <strong th:text="${cliente.nome}"></strong>
+                <div class="c-card" th:each="cliente : ${clientes}">
 
-                        <span>Código: <b th:text="${cliente.id}"></b></span>
-                        <span>CPF: <b th:text="${cliente.cpf}"></b></span>
-                        <span>Telefone: <b th:text="${cliente.telefone}"></b></span>
-                        <span>Status: <b th:text="${cliente.status}"></b></span>
+                    <div class="card-linha">
 
-                        <div class="card-acoes">
-                            <a th:href="@{/editarCliente/{id}(id=${cliente.id})}">
-                                <i class="fas fa-pen"></i>
-                            </a>
-
-                            <button class="btn-excluir" th:attr="data-id=${cliente.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <!-- IMAGEM -->
+                        <div class="card-foto">
+                            <img th:src="@{/img/no-image.jpg}" alt="Foto cliente">
                         </div>
+
+                        <!-- CONTEÚDO -->
+                        <div class="card-conteudo">
+
+                            <div class="card-header">
+                                <strong th:text="${cliente.nome}"></strong>
+                                <span class="status" th:text="${cliente.status}"></span>
+                            </div>
+
+                            <div class="card-body">
+                                <span><b>Código:</b> <span th:text="${cliente.id}"></span></span>
+                                <span><b>CPF/CNPJ:</b>
+                                <span th:text="${#strings.isEmpty(cliente.cpf) ? cliente.cnpj : cliente.cpf}"></span>
+                                </span>
+                                <span><b>Telefone:</b> <span th:text="${cliente.telefone}"></span></span>
+                                <span><b>E-mail:</b> <span th:text="${cliente.email}"></span></span>
+                            </div>
+
+                        </div>
+
                     </div>
+
+                    <div class="card-acoes">
+                        <a th:href="@{/editarCliente/{id}(id=${cliente.id})}">
+                            <i class="fas fa-pen" id="edit-icon"></i>
+                        </a>
+
+                        <button class="btn-excluir" th:attr="data-id=${cliente.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
