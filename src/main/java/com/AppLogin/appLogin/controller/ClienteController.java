@@ -2,13 +2,16 @@ package com.AppLogin.appLogin.controller;
 
 import com.AppLogin.appLogin.model.*;
 import com.AppLogin.appLogin.repository.*;
+import com.AppLogin.appLogin.service.CloudinaryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +38,9 @@ public class ClienteController {
 
     @Autowired
     private RamoRepository ramoRepository;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @GetMapping("/mainCliente")
     public String mainCliente(
@@ -77,21 +83,20 @@ public class ClienteController {
     }
 
     @GetMapping("/novoCliente")
-    public String novoCliente(HttpSession session,Model model) {
+    public String novoCliente(HttpSession session, Model model) {
+        if (!isUsuarioLogado(session)) {
+            return "redirect:/login";
+        }
         model.addAttribute("tipoUsuarios", tipoUsuarioRepository.findAll());
         model.addAttribute("empresas", empresaRepository.findAll());
         model.addAttribute("estados", estadoRepository.findAll());
         model.addAttribute("cidades", cidadeRepository.findAll());
         model.addAttribute("ramos", ramoRepository.findAll());
-        if (!isUsuarioLogado(session)) {
-            return "redirect:/login";
-        }
         return "novoCliente";
     }
 
     @GetMapping("/editarCliente/{id}")
     public String editarCliente(@PathVariable Long id, HttpServletRequest request, Model model) {
-
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("usuarioLogado") == null) {
@@ -106,21 +111,13 @@ public class ClienteController {
             return "redirect:/mainCliente";
         }
 
-        // ============================
-        // DADOS PRINCIPAIS
-        // ============================
         model.addAttribute("cliente", cliente);
-
-        // ============================
-        // LISTAS PARA OS SELECTS
-        // ============================
         model.addAttribute("ramos", ramoRepository.findAll());
         model.addAttribute("estados", estadoRepository.findAll());
         model.addAttribute("cidades", cidadeRepository.findAll());
 
         return "editarCliente";
     }
-
 
     @PostMapping("/salvarCliente")
     public String salvarCliente(
@@ -137,6 +134,7 @@ public class ClienteController {
             @RequestParam Integer entregaProgramada,
             @RequestParam(required = false) Integer diasEntregaProgramada,
             @RequestParam String status,
+            @RequestParam(value = "foto", required = false) MultipartFile foto,
             Model model
     ) {
 
@@ -155,9 +153,7 @@ public class ClienteController {
                         nome, cpf, cnpj, telefone, email, tipo, descricao,
                         ramoId, estado, cidade, entregaProgramada, diasEntregaProgramada, status);
             }
-
             cpfFinal = cpf;
-
             if (clienteRepository.findFirstByCpfAndStatus(cpfFinal, "ATIVO").isPresent()) {
                 return erroCliente(model, "Já existe um cliente com este CPF!",
                         nome, cpf, cnpj, telefone, email, tipo, descricao,
@@ -171,9 +167,7 @@ public class ClienteController {
                         nome, cpf, cnpj, telefone, email, tipo, descricao,
                         ramoId, estado, cidade, entregaProgramada, diasEntregaProgramada, status);
             }
-
             cnpjFinal = cnpj;
-
             if (clienteRepository.findFirstByCnpjAndStatus(cnpjFinal, "ATIVO").isPresent()) {
                 return erroCliente(model, "Já existe um cliente com este CNPJ!",
                         nome, cpf, cnpj, telefone, email, tipo, descricao,
@@ -226,14 +220,25 @@ public class ClienteController {
         cliente.setDiasEntregaProgramada(diasEntregaProgramada);
         cliente.setStatus(status);
 
-        clienteRepository.save(cliente);
+        Cliente clienteSalvo = clienteRepository.save(cliente);
+
+        /* ===== SALVAR FOTO ===== */
+        try {
+            if (foto != null && !foto.isEmpty()) {
+                String cgc = cnpjFinal != null ? cnpjFinal : cpfFinal;
+                String url = cloudinaryService.uploadFoto(foto, "clientes", cgc + "_" + clienteSalvo.getId());
+                clienteSalvo.setFotoUrl(url);
+                clienteRepository.save(clienteSalvo);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         model.addAttribute("sucesso", "Cliente cadastrado com sucesso!");
         model.addAttribute("rotaRedirect", "/mainCliente");
 
         return "novoCliente";
     }
-
 
     @PostMapping("/atualizarCliente")
     public String atualizarCliente(
@@ -251,20 +256,18 @@ public class ClienteController {
             @RequestParam Integer entregaProgramada,
             @RequestParam(required = false) Integer diasEntregaProgramada,
             @RequestParam String status,
+            @RequestParam(value = "foto", required = false) MultipartFile foto,
             Model model
     ) {
 
         Optional<Cliente> optionalCliente = clienteRepository.findById(id);
         if (optionalCliente.isEmpty()) {
-            model.addAttribute("erro", "Cliente não encontrado!");
             return "redirect:/mainCliente";
         }
 
         Cliente cliente = optionalCliente.get();
 
-    /* ===============================
-       LIMPAR MÁSCARAS
-    ================================ */
+        /* ===== LIMPAR MÁSCARAS ===== */
         if (cpf != null) cpf = cpf.replaceAll("\\D", "");
         if (cnpj != null) cnpj = cnpj.replaceAll("\\D", "");
         if (telefone != null) telefone = telefone.replaceAll("\\D", "");
@@ -272,16 +275,12 @@ public class ClienteController {
         String cpfFinal = null;
         String cnpjFinal = null;
 
-    /* ===============================
-       VALIDAR DOCUMENTO
-    ================================ */
+        /* ===== VALIDAR DOCUMENTO ===== */
         if (cpf != null && !cpf.isBlank()) {
             if (cpf.length() != 11) {
                 return erroEdicao(model, cliente, "CPF inválido.");
             }
-
             cpfFinal = cpf;
-
             Optional<Cliente> existente = clienteRepository.findFirstByCpfAndStatus(cpfFinal, "ATIVO");
             if (existente.isPresent() && !existente.get().getId().equals(id)) {
                 return erroEdicao(model, cliente, "Já existe outro cliente com este CPF!");
@@ -292,9 +291,7 @@ public class ClienteController {
             if (cnpj.length() != 14) {
                 return erroEdicao(model, cliente, "CNPJ inválido.");
             }
-
             cnpjFinal = cnpj;
-
             Optional<Cliente> existente = clienteRepository.findFirstByCnpjAndStatus(cnpjFinal, "ATIVO");
             if (existente.isPresent() && !existente.get().getId().equals(id)) {
                 return erroEdicao(model, cliente, "Já existe outro cliente com este CNPJ!");
@@ -305,25 +302,31 @@ public class ClienteController {
             return erroEdicao(model, cliente, "Informe CPF ou CNPJ.");
         }
 
-    /* ===============================
-       RAMO
-    ================================ */
+        /* ===== RAMO ===== */
         Optional<Ramo> ramoOpt = ramoRepository.findById(ramoId);
         if (ramoOpt.isEmpty()) {
             return erroEdicao(model, cliente, "Ramo inválido.");
         }
 
-    /* ===============================
-       ESTADO / CIDADE
-    ================================ */
+        /* ===== CIDADE ===== */
         Optional<Cidade> cidadeOpt = cidadeRepository.findById(cidade);
         if (cidadeOpt.isEmpty() || !cidadeOpt.get().getEstado().getIdestado().equals(estado)) {
             return erroEdicao(model, cliente, "Cidade não pertence ao estado selecionado.");
         }
 
-    /* ===============================
-       ATUALIZAR CAMPOS
-    ================================ */
+        /* ===== SALVAR FOTO ===== */
+        try {
+            if (foto != null && !foto.isEmpty()) {
+                String cgc = cnpjFinal != null ? cnpjFinal : cpfFinal;
+                String url = cloudinaryService.uploadFoto(foto, "clientes", cgc + "_" + id);
+                cliente.setFotoUrl(url);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("erro", "Erro ao salvar a foto: " + e.getMessage());
+        }
+
+        /* ===== ATUALIZAR CAMPOS ===== */
         cliente.setNome(nome);
         cliente.setCpf(cpfFinal);
         cliente.setCnpj(cnpjFinal);
@@ -342,8 +345,6 @@ public class ClienteController {
         model.addAttribute("sucesso", "Cliente atualizado com sucesso!");
         model.addAttribute("rotaRedirect", "/mainCliente");
         model.addAttribute("cliente", cliente);
-
-        // Recarregar listas
         model.addAttribute("ramos", ramoRepository.findAll());
         model.addAttribute("estados", estadoRepository.findAll());
         model.addAttribute("cidades", cidadeRepository.findAll());
@@ -373,7 +374,6 @@ public class ClienteController {
             String status
     ) {
         model.addAttribute("erro", mensagem);
-
         model.addAttribute("nome", nome);
         model.addAttribute("cpf", cpf);
         model.addAttribute("cnpj", cnpj);
@@ -387,7 +387,6 @@ public class ClienteController {
         model.addAttribute("entregaProgramada", entregaProgramada);
         model.addAttribute("diasEntregaProgramada", diasEntregaProgramada);
         model.addAttribute("status", status);
-
         model.addAttribute("ramos", ramoRepository.findAll());
         model.addAttribute("estados", estadoRepository.findAll());
         model.addAttribute("cidades", cidadeRepository.findAll());
@@ -395,17 +394,13 @@ public class ClienteController {
     }
 
     private String erroEdicao(Model model, Cliente cliente, String mensagem) {
-
         model.addAttribute("erro", mensagem);
         model.addAttribute("cliente", cliente);
-
         model.addAttribute("ramos", ramoRepository.findAll());
         model.addAttribute("estados", estadoRepository.findAll());
         model.addAttribute("cidades", cidadeRepository.findAll());
-
         return "editarCliente";
     }
-
 
     @GetMapping("/excluirCliente/{id}")
     public String excluirCliente(@PathVariable Long id) {

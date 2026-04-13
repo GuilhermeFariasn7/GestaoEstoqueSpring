@@ -1,43 +1,187 @@
-<!-- fragments/header.html -->
 <header th:fragment="mainHeader">
-<!--
-        <img src="https://i.ibb.co/fY57x7kz/LOGONOVASTOCK2.png" class="logo-header" alt="Logo">
--->
-    <div class="header-top">
-
-        <div class="header-empresa">
-            <i class="fa-solid fa-city"></i>
-            <strong th:text="${empresaId + ' - ' + empresaUsuario}">Empresa</strong>
-        </div>
-        <div class="header-filial">
-            <i class="fa-solid fa-school-circle-exclamation"></i>
-            <small th:text="${filialId + ' - ' + filialUsuario}">Filial</small>
-        </div>
-    </div>
-    <div class="header-bottom">
-        <button class="menu-toggle">
-            <i class="fas fa-bars"></i>
-        </button>
-        <div class="header-left">
-
-            <nav class="nav-links">
-                <a href="/"><i class="fas fa-house"></i><span>Início</span></a>
-                <a href="/mainCliente"><i class="fas fa-users"></i><span>Clientes</span></a>
-                <a href="/mainProduto"><i class="fas fa-boxes-stacked"></i><span>Produtos</span></a>
-                <a href="/mainEstoque"><i class="fa-solid fa-cart-flatbed"></i><span>Estoques</span></a>
-                <a href="/mainRelatorio"><i class="fas fa-chart-line"></i><span>Relatórios</span></a>
-            </nav>
-        </div>
-        <div class="header-right">
-            <div class="user-info">
-                <i class="fas fa-user-circle"></i>
-                <span th:text="${nomeUsuario}">Usuário</span>
-                <a href="/logout" title="Sair">
-                    <i class="fas fa-right-from-bracket"></i>
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container-fluid">
+            <!-- Versão Mobile: Tudo em uma linha -->
+            <div class="d-flex d-md-none w-100 align-items-center">
+                <button class="navbar-toggler p-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="mx-auto">
+                    <span class="text-white small">
+                        <span th:text="${empresaId}">00</span> -
+                        <span th:text="${filialId}">00</span>
+                    </span>
+                </div>
+                <a href="/logout" class="text-white">
+                    <i class="fas fa-right-from-bracket fs-5"></i>
                 </a>
             </div>
+
+            <!-- Versão Desktop: layout refinado -->
+            <div class="d-none d-md-block w-100">
+                <!-- Linha superior: Empresa e Filial à esquerda, Logout à direita -->
+                <div class="d-flex align-items-center w-100 mb-2">
+                    <div class="d-flex align-items-center gap-3 small">
+                        <span class="text-white-50">
+                            <i class="fa-solid fa-city me-1"></i>
+                            <span th:text="${empresaId + ' - ' + empresaUsuario}">Empresa</span>
+                        </span>
+                        <span class="text-white-50">
+                            <i class="fa-solid fa-building me-1"></i>
+                            <span th:text="${filialId + ' - ' + filialUsuario}">Filial</span>
+                        </span>
+                    </div>
+                    <div class="ms-auto">
+                        <a href="/logout" class="text-white" title="Sair">
+                            <i class="fas fa-right-from-bracket fs-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Linha inferior: Menu centralizado com efeitos -->
+                <div class="d-flex justify-content-center w-100">
+                    <ul class="nav-menu d-flex gap-1">
+                        <li class="nav-item">
+                            <a class="nav-link px-4 py-2" href="/">
+                                <i class="fas fa-house me-2"></i>Início
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-4 py-2" href="/mainCliente">
+                                <i class="fas fa-users me-2"></i>Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-4 py-2" href="/mainProduto">
+                                <i class="fas fa-boxes-stacked me-2"></i>Produtos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-4 py-2" href="/mainEstoque">
+                                <i class="fa-solid fa-cart-flatbed me-2"></i>Estoques
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-4 py-2" href="/mainRelatorio">
+                                <i class="fas fa-chart-line me-2"></i>Relatórios
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu colapsável para mobile refinado -->
+    <div class="collapse bg-primary" id="menuPrincipal">
+        <div class="container-fluid py-3">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link py-3 d-flex align-items-center" href="/">
+                        <i class="fas fa-house me-3 fa-fw"></i> Início
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link py-3 d-flex align-items-center" href="/mainCliente">
+                        <i class="fas fa-users me-3 fa-fw"></i> Clientes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link py-3 d-flex align-items-center" href="/mainProduto">
+                        <i class="fas fa-boxes-stacked me-3 fa-fw"></i> Produtos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link py-3 d-flex align-items-center" href="/mainEstoque">
+                        <i class="fa-solid fa-cart-flatbed me-3 fa-fw"></i> Estoques
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link py-3 d-flex align-items-center" href="/mainRelatorio">
+                        <i class="fas fa-chart-line me-3 fa-fw"></i> Relatórios
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider bg-white opacity-25 my-2"></li>
+                <li class="nav-item">
+                    <span class="nav-link text-white-50 py-2 d-flex align-items-center">
+                        <i class="fa-solid fa-city me-3 fa-fw"></i>
+                        <span th:text="${empresaId + ' - ' + empresaUsuario}">Empresa</span>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link text-white-50 py-2 d-flex align-items-center">
+                        <i class="fa-solid fa-building me-3 fa-fw"></i>
+                        <span th:text="${filialId + ' - ' + filialUsuario}">Filial</span>
+                    </span>
+                </li>
+            </ul>
         </div>
     </div>
 
-</header>
+    <style>
+        /* Estilos refinados para o menu desktop */
+        .nav-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            padding: 4px;
+        }
 
+        .nav-menu .nav-item {
+            margin: 0;
+        }
+
+        .nav-menu .nav-link {
+            color: rgba(255,255,255,0.85);
+            font-weight: 500;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-menu .nav-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-1px);
+        }
+
+        .nav-menu .nav-link:active {
+            transform: translateY(0);
+        }
+
+        /* Indicador de página ativa (opcional - precisa adicionar lógica no backend) */
+        .nav-menu .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        /* Ajustes para o ícone de logout */
+        .fa-right-from-bracket {
+            transition: transform 0.3s ease;
+        }
+
+        .fa-right-from-bracket:hover {
+            transform: scale(1.1);
+        }
+
+        /* Melhorias para o menu mobile */
+        @media (max-width: 767px) {
+            .collapse .nav-link {
+                border-left: 3px solid transparent;
+                transition: all 0.2s ease;
+            }
+
+            .collapse .nav-link:hover {
+                border-left-color: white;
+                background: rgba(255,255,255,0.1);
+            }
+
+            .fa-fw {
+                width: 1.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</header>

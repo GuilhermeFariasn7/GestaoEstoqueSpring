@@ -31,6 +31,17 @@ public class Cliente {
     @Column(length = 150)
     private String descricao;
 
+    /* CAMPO PARA SALVAR FOTO */
+    @Column(name = "foto_url")
+    private String fotoUrl;
+
+    public String getFotoUrl() {
+        return fotoUrl;
+    }
+
+    public void setFotoUrl(String fotoUrl) {
+        this.fotoUrl = fotoUrl;
+    }
     /* ===== ENTREGA ===== */
 
     @Column(name = "entrega_programada")

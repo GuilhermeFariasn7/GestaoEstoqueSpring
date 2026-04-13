@@ -5,140 +5,189 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Gestão de Estoque</title>
 
-    <!-- Pré-conexão para melhorar performance -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <!-- Fonte -->
-    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap"
-          rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/style.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
+<body class="d-flex align-items-center min-vh-100">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+            <div class="login-box p-4">
 
-<body>
-<div class="login-box">
+                <!-- MENSAGENS DE ERRO/SUCESSO -->
+                <div th:if="${erro}" class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${erro}"></span>
+                </div>
 
-    <h2>Preencha os dados abaixo para finalizar seu cadastro no sistema.</h2>
+                <div th:if="${sucesso}" class="alert alert-success" role="alert" th:attr="data-redirect=${rotaRedirect}">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${sucesso}"></span>
+                </div>
 
-    <div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
-    <div th:if="${sucesso}"
-         class="mensagem sucesso"
-         th:text="${sucesso}"
-         th:attr="data-redirect=${rotaRedirect}">
-    </div>
+                <!-- FORMULÁRIO USANDO DTO -->
+                <form method="post" action="/CadastroUsuario" id="cadastro-form"  th:object="${usuarioDTO}" autocomplete="off">
+                    <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
 
-    <form method="post" action="/CadastroUsuario" id="cadastro-form">
-        <div class="cadastro-campos-scroll">
-            <!-- TIPO DE USUARIO -->
-            <div class="input-group">
-                <select id="tipoUsuarioId" name="tipoUsuarioId" required>
-                    <option value="">Selecione o tipo do usuário</option>
-                    <option th:each="tipoUsuario : ${tipoUsuarios}"
-                            th:value="${tipoUsuario.idtipoUsuario}"
-                            th:text="${tipoUsuario.idtipoUsuario + ' - ' + tipoUsuario.nome}">
-                    </option>
-                </select>
-                <i class="fas fa-user-shield"></i>
-            </div>
-            <!-- EMPRESA -->
-            <div class="input-group">
-                <select id="empresa" name="empresa" onchange="carregarFiliais()" required>
-                    <option value="">Selecione a empresa</option>
-                    <option th:each="empresa : ${empresas}"
-                            th:value="${empresa.idempresa}"
-                            th:text="${empresa.idempresa + ' - ' + empresa.nome}">
-                    </option>
-                </select>
-                <i class="fas fa-building"></i>
-            </div>
+                        <!-- TIPO USUÁRIO -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-user-shield"></i>
+                            </span>
+                            <select class="form-select" id="tipoUsuarioId" name="tipoUsuarioId" required>
+                                <option value="">Selecione o tipo do usuário</option>
+                                <option th:each="tipoUsuario : ${tipoUsuarios}"
+                                        th:value="${tipoUsuario.idtipoUsuario}"
+                                        th:text="${tipoUsuario.idtipoUsuario + ' - ' + tipoUsuario.nome}"
+                                        th:selected="*{tipoUsuarioId} == ${tipoUsuario.idtipoUsuario}">
+                                </option>
+                            </select>
+                        </div>
 
-            <!-- FILIAL -->
-            <div class="input-group">
-                <select id="filial" name="filial" required>
-                    <option value="">Selecione a filial</option>
-                </select>
+                        <!-- EMPRESA -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-building"></i>
+                            </span>
+                            <select class="form-select" id="empresa" name="empresa" onchange="carregarFiliais()" required>
+                                <option value="">Selecione a empresa</option>
+                                <option th:each="empresa : ${empresas}"
+                                        th:value="${empresa.idempresa}"
+                                        th:text="${empresa.idempresa + ' - ' + empresa.nome}"
+                                        th:selected="*{empresa} == ${empresa.idempresa}">
+                                </option>
+                            </select>
+                        </div>
 
-                <i class="fas fa-code-branch"></i>
-            </div>
+                        <!-- FILIAL -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-code-branch"></i>
+                            </span>
+                            <select class="form-select" id="filial" name="filial" required th:attr="data-selected=*{filial}">
+                                <option value="">Selecione a filial</option>
+                                <!-- As opções serão carregadas via JavaScript -->
+                            </select>
+                        </div>
 
-            <!-- NOME -->
-            <div class="input-group">
-                <input type="text" name="nome" placeholder="Nome completo"
-                       th:value="${nome}" required/>
-                <i class="fas fa-user"></i>
-            </div>
+                        <!-- NOME -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input type="text" class="form-control" name="nome" placeholder="Nome completo"
+                                   th:value="*{nome}" required/>
+                        </div>
 
-            <!-- LOGIN -->
-            <div class="input-group">
-                <input type="text" name="login" placeholder="Login de acesso"
-                       th:value="${login}" required/>
-                <i class="fas fa-id-badge"></i>
-            </div>
+                        <!-- LOGIN -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-id-badge"></i>
+                            </span>
+                            <input type="text" class="form-control" name="login" placeholder="Login de acesso"
+                                   th:value="*{login}" required/>
+                        </div>
 
-            <!-- EMAIL -->
-            <div class="input-group">
-                <input type="email" name="email" placeholder="Email"
-                       th:value="${email}" required/>
-                <i class="fas fa-envelope"></i>
-            </div>
-            <!-- SENHA -->
-            <div class="input-group">
-                <input type="password" name="senha" placeholder="Senha" required/>
-                <a><i id="toggleSenha" class="fas fa-eye"></i></a>
-                <i class="fas fa-lock"></i>
-            </div>
+                        <!-- EMAIL -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" name="email" placeholder="Email"
+                                   th:value="*{email}" required/>
+                        </div>
 
-            <!-- CONFIRMAR SENHA -->
-            <div class="input-group">
-                <input type="password" name="confirmaSenha" placeholder="Confirmar senha" required/>
-                <a><i id="toggleConfSenha" class="fas fa-eye"></i></a>
-                <i class="fas fa-lock"></i>
-            </div>
+                        <!-- SENHA -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="senhaInput" name="senha"
+                                   placeholder="Senha" th:value="*{senha}" required/>
+                            <span class="input-group-text bg-white" id="toggleSenha" style="cursor: pointer;">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
 
-            <!-- TELEFONE -->
-            <div class="input-group">
-                <input id="fone" type="tel" name="telefone" placeholder="Telefone"
-                       th:value="${telefone}"/>
-                <i class="fas fa-phone"></i>
-            </div>
-            <!-- CEP -->
-            <div class="input-group">
-                <input type="text" id="cep" name="cep" placeholder="CEP">
-                <i class="fas fa-location-dot"></i>
-            </div>
-            <!-- ESTADO -->
-            <div class="input-group">
-                <select id="estado" name="estado" required>
-                    <option value="">Selecione o estado</option>
-                    <option th:each="estado : ${estados}"
-                            th:value="${estado.idestado}"
-                            th:text="${estado.idestado + ' - ' + estado.descricao}">
-                    </option>
-                </select>
-                <i class="fas fa-map"></i>
-            </div>
-            <!-- CIDADE -->
-            <div class="input-group">
-                <select id="cidade" name="cidade" required>
-                    <option value="">Selecione a cidade</option>
-                    <option th:each="cidade : ${cidades}"
-                            th:value="${cidade.idcidade}"
-                            th:text="${cidade.nome}"
-                            th:attr="data-estado=${cidade.estado.idestado}">
-                </select>
-                <i class="fas fa-city"></i>
-            </div>
+                        <!-- CONFIRMAR SENHA -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" class="form-control" id="confSenhaInput" name="confirmaSenha"
+                                   placeholder="Confirmar senha" th:value="*{confirmaSenha}" required/>
+                            <span class="input-group-text bg-white" id="toggleConfSenha" style="cursor: pointer;">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
 
+                        <!-- TELEFONE -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                            <input type="tel" class="form-control" id="fone" name="telefone"
+                                   placeholder="Telefone" th:value="*{telefone}"/>
+                        </div>
+
+                        <!-- CEP -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-location-dot"></i>
+                            </span>
+                            <input type="text" class="form-control" id="cep" name="cep"
+                                   placeholder="CEP" th:value="*{cep}"/>
+                        </div>
+
+                        <!-- ESTADO -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-map"></i>
+                            </span>
+                            <select class="form-select" id="estado" name="estado" required>
+                                <option value="">Selecione o estado</option>
+                                <option th:each="estado : ${estados}"
+                                        th:value="${estado.idestado}"
+                                        th:text="${estado.idestado + ' - ' + estado.descricao}"
+                                        th:selected="*{estado} == ${estado.idestado}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- CIDADE -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-white">
+                                <i class="fas fa-city"></i>
+                            </span>
+                            <select class="form-select" id="cidade" name="cidade" required>
+                                <option value="">Selecione a cidade</option>
+                                <option th:each="cidade : ${cidades}"
+                                        th:value="${cidade.idcidade}"
+                                        th:text="${cidade.nome}"
+                                        th:attr="data-estado=${cidade.estado.idestado}"
+                                        th:selected="*{cidade} == ${cidade.idcidade}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <button type="submit" class="btn btn-primary px-4 mb-2">Salvar</button>
+                        <div>
+                            <a th:href="@{/login}" class="text-decoration-none">Já possui conta? Entrar</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
-    <!-- Footer fixo com botão salvar -->
-    <div class="cadastro-footer">
-        <button type="submit" form="cadastro-form">Salvar</button>
-        <a th:href="@{/login}">Já possui conta? Entrar</a>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/imask"></script>
 <script th:src="@{/js/style.js}"></script>
 

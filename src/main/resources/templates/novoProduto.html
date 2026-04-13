@@ -2,6 +2,7 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Produto - Gestão de Estoque</title>
 
     <!-- Google Fonts -->
@@ -9,134 +10,270 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans&display=swap" rel="stylesheet"/>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
     <!-- Seu CSS -->
     <link rel="stylesheet" href="/style.css"/>
 </head>
-<body>
+<body class="bg-light">
 
-<header class="header-return">
-    <div class="header-btn-voltar">
-        <a href="/mainCliente" class="btn btn-secundario">
-            <i class="fas fa-arrow-left"></i> Voltar
-        </a>
-    </div>
-    <div class="header-title">
-        <i class="fa-solid fa-boxes-packing"></i> <h2>Cadastro de produto</h2>
+<!-- Header simplificado e padronizado -->
+<header class="header-slim">
+    <div class="container-slim">
+        <div class="d-flex align-items-center">
+            <a href="/mainProduto" class="btn btn-link text-dark p-0 me-3">
+                <i class="fas fa-arrow-left fa-lg"></i>
+            </a>
+            <h2 class="h5 mb-0">
+                <i class="fa-solid fa-boxes-packing text-primary me-2"></i>
+                Cadastro de Produto
+            </h2>
+        </div>
     </div>
 </header>
-<div class="login-box">
 
-    <form class="form-produto" action="/salvarProduto" method="post" th:object="${produto}" id="cadastro-form">
+<div class="container-slim mt-3 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="login-box">
 
-        <!--<div th:if="${erro}" class="mensagem erro" th:text="${erro}"></div>
-        <div th:if="${sucesso}"
-             class="mensagem sucesso"
-             th:text="${sucesso}"
-             th:attr="data-redirect=${rotaRedirect}"></div>-->
+                <form action="/salvarProduto" method="post" th:object="${produto}" id="cadastro-form" enctype="multipart/form-data">
 
-        <div class="edit-box-campos">
-            <div class="divImgProduto">
-                <p>Imagem do Produto</p>
-                <br>
-                <img id="preview" src="#" alt="Preview da Imagem" class="imgProduto" style="display:none;"/>
+                    <input type="hidden" th:field="*{id}"/>
+                    <!-- Mensagens de erro/sucesso -->
+                    <div th:if="${erro}" class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span th:text="${erro}"></span>
+                    </div>
 
-                <input type="file" id="imagem" name="imagem" accept="image/*" onchange="previewImagem(event)"
-                       style="display:none"/>
+                    <div th:if="${sucesso}" class="alert alert-success" role="alert" th:attr="data-redirect=${rotaRedirect}">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <span th:text="${sucesso}"></span>
+                    </div>
 
-                <button type="button" class="btn-anexar" onclick="document.getElementById('imagem').click()">
-                    <i class="fas fa-upload"></i> Adicionar Imagem
-                </button>
-            </div>
+                    <!-- Área de imagem Produto -->
+                    <div class="text-center mb-3">
+                        <label class="form-label fw-semibold mb-2">
+                            <i class="fas fa-image text-primary me-1"></i> Imagem do Produto
+                        </label>
+                        <div class="foto-upload">
+                            <div class="mb-2">
+                                <img th:src="${produto.fotoUrl != null ? produto.fotoUrl : '/img/no-image.jpg'}"
+                                     onerror="this.src='/img/no-image.jpg'"
+                                     class="border shadow-sm"
+                                     style="width: 120px; height: 120px; object-fit: contain; border-radius: 12px; background-color: #f8f9fa;">
+                            </div>
+                            <div class="input-group input-group-sm">
+                                <input type="file" class="form-control" name="imagem" id="inputFoto" accept="image/*">
+                                <label class="input-group-text" for="inputFoto">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-1">Formatos: JPG, PNG (máx 5MB)</small>
+                        </div>
+                    </div>
 
-            <div class="input-group">
-                <i class="fas fa-tag"></i>
-                <input type="text" th:field="*{nome}" placeholder="Nome do produto" required/>
-                <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="erro-validacao"></small>
-            </div>
+                    <!-- Container com scroll para os campos -->
+                    <div class="campos-scroll">
 
-            <div class="input-group">
-                <i class="fas fa-file-alt"></i>
-                <input type="text" th:field="*{descricao}" placeholder="Descrição"/>
-            </div>
+                        <!-- Nome -->
+                        <div>
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-tag text-primary me-1"></i> Nome do Produto <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text bg-white">
+                                    <i class="fas fa-tag text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control" th:field="*{nome}" placeholder="Ex: Notebook Dell Inspiron" required/>
+                            </div>
+                            <small th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger d-block mb-2"></small>
+                        </div>
 
-            <div class="input-group">
-                <i class="fas fa-list"></i>
-                <input type="text" th:field="*{tipo}" placeholder="Tipo"/>
-            </div>
+                        <!-- Descrição -->
+                        <div class="mt-2">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-file-alt text-primary me-1"></i> Descrição
+                            </label>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text bg-white">
+                                    <i class="fas fa-file-alt text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control" th:field="*{descricao}" placeholder="Ex: Produto para uso do Almoxarifado"/>
+                            </div>
+                        </div>
 
-            <div class="input-group">
-                <i class="fas fa-layer-group"></i>
-                <input type="text" th:field="*{grupo}" placeholder="Grupo"/>
-            </div>
+                        <!-- Linha com Tipo e Grupo -->
+                        <div class="row g-2 mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-list text-primary me-1"></i> Tipo <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-list text-muted"></i>
+                                    </span>
+                                    <select class="form-select" id="TipoProdutoId" name="tipoId" required>
+                                        <option value="">Selecione o tipo</option>
+                                        <option th:each="tipoProduto : ${tipoProdutos}"
+                                                th:value="${tipoProduto.idTipoProduto}"
+                                                th:text="${tipoProduto.idTipoProduto + ' - ' + tipoProduto.descricao}"
+                                                th:selected="${tipoProduto.idTipoProduto == produto.tipoId}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-layer-group text-primary me-1"></i> Grupo <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-layer-group text-muted"></i>
+                                    </span>
+                                    <select class="form-select" id="GrupoProdutoId" name="grupoId" required>
+                                        <option value="">Selecione o grupo</option>
+                                        <option th:each="grupoProduto : ${grupoProdutos}"
+                                                th:value="${grupoProduto.idGrupoProduto}"
+                                                th:text="${grupoProduto.idGrupoProduto + ' - ' + grupoProduto.descricao}"
+                                                th:selected="${grupoProduto.idGrupoProduto == produto.grupoId}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="input-group">
-                <i class="fas fa-barcode"></i>
-                <input type="text" th:field="*{codigoBarras}" placeholder="Código de Barras"/>
-            </div>
+                        <!-- Código de Barras e Unidade -->
+                        <div class="row g-2 mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-barcode text-primary me-1"></i> Código de Barras
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-barcode text-muted"></i>
+                                    </span>
+                                    <input type="text" class="form-control" th:field="*{codigoBarras}" placeholder="Ex: 7891234567890"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-ruler text-primary me-1"></i> Unidade <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">
+                                        <i class="fas fa-ruler text-muted"></i>
+                                    </span>
+                                    <select class="form-select" id="UnidadeMedidaId" name="unidadeMedidaId" required>
+                                        <option value="">Selecione a unidade de medida</option>
+                                        <option th:each="unidadeMedida : ${unidadeMedidas}"
+                                                th:value="${unidadeMedida.idUnidadeMedida}"
+                                                th:text="${unidadeMedida.idUnidadeMedida + ' - ' + unidadeMedida.nome}"
+                                                th:selected="${unidadeMedida.idUnidadeMedida == produto.unidadeMedidaId}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="input-group">
-                <i class="fas fa-ruler"></i>
-                <input type="text" th:field="*{unidadeMedida}" placeholder="Unidade de Medida"/>
-            </div>
+                        <!-- Preços -->
+                        <div class="row g-2 mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-dollar-sign text-primary me-1"></i> Preço de Custo (R$)
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">R$</span>
+                                    <input type="number" step="0.01" min="0" class="form-control" th:field="*{precoCusto}" placeholder="0,00"/>
+                                </div>
+                                <small th:if="${#fields.hasErrors('precoCusto')}" th:errors="*{precoCusto}" class="text-danger d-block mb-2"></small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    <i class="fas fa-dollar-sign text-primary me-1"></i> Preço de Venda (R$)
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white">R$</span>
+                                    <input type="number" step="0.01" min="0" class="form-control" th:field="*{precoVenda}" placeholder="0,00"/>
+                                </div>
+                                <small th:if="${#fields.hasErrors('precoVenda')}" th:errors="*{precoVenda}" class="text-danger d-block mb-2"></small>
+                            </div>
+                        </div>
 
-            <div class="input-group">
-                <i class="fas fa-dollar-sign"></i>
-                <input type="number" step="0.01" min="0" th:field="*{precoCusto}" placeholder="Preço de Custo"/>
-                <small th:if="${#fields.hasErrors('precoCusto')}" th:errors="*{precoCusto}" class="erro-validacao"></small>
-            </div>
+                        <!-- Estoques -->
+                        <div class="mt-2">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-boxes text-primary me-1"></i> Controle de Estoque
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-md-4">
+                                    <small class="text-muted" style="font-size: 0.7rem;">Estoque Atual</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-boxes text-muted"></i>
+                                        </span>
+                                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{estoqueAtual}" placeholder="Atual"/>
+                                    </div>
 
-            <div class="input-group">
-                <i class="fas fa-dollar-sign"></i>
-                <input type="number" step="0.01" min="0" th:field="*{precoVenda}" placeholder="Preço de Venda"/>
-                <small th:if="${#fields.hasErrors('precoVenda')}" th:errors="*{precoVenda}" class="erro-validacao"></small>
-            </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted" style="font-size: 0.7rem;">Estoque Mínimo</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-box-open text-muted"></i>
+                                        </span>
+                                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{estoqueMinimo}" placeholder="Mínimo"/>
+                                    </div>
 
-            <div class="input-group">
-                <i class="fas fa-boxes"></i>
-                <input type="number" step="0.01" min="0" th:field="*{estoqueAtual}" placeholder="Estoque Atual"/>
-                <small th:if="${#fields.hasErrors('estoqueAtual')}" th:errors="*{estoqueAtual}" class="erro-validacao"></small>
-            </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted" style="font-size: 0.7rem;">Estoque Máximo</small>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white">
+                                            <i class="fas fa-box-open text-muted"></i>
+                                        </span>
+                                        <input type="number" step="0.01" min="0" class="form-control" th:field="*{estoqueMaximo}" placeholder="Máximo"/>
+                                    </div>
 
-            <div class="input-group">
-                <i class="fas fa-box-open"></i>
-                <input type="number" step="0.01" min="0" th:field="*{estoqueMinimo}" placeholder="Estoque Mínimo"/>
-            </div>
+                                </div>
+                            </div>
+                            <small th:if="${#fields.hasErrors('estoqueAtual')}" th:errors="*{estoqueAtual}" class="text-danger d-block mt-1"></small>
+                        </div>
 
-            <div class="input-group">
-                <i class="fas fa-box-open"></i>
-                <input type="number" step="0.01" min="0" th:field="*{estoqueMaximo}" placeholder="Estoque Máximo"/>
-            </div>
-
-            <!-- REMOVER ou CORRIGIR o campo dataCadastro -->
-            <!--
-            <div class="input-group">
-                <i class="fas fa-calendar-alt"></i>
-                <input type="datetime-local" th:field="*{dataCadastro}"/>
-            </div>
-            -->
-
-            <div class="input-group">
-                <i class="fas fa-toggle-on"></i>
-                <select th:field="*{ativo}" required>
-                    <option value="" disabled selected>Selecione o status</option>
-                    <option value="true">Ativo</option>
-                    <option value="false">Inativo</option>
-                </select>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="btnFooter">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> Salvar
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
 
+<!-- Botão flutuante para salvar -->
+<button type="submit" form="cadastro-form" class="botao-flutuante-salvar" title="Salvar produto">
+    <i class="fas fa-save"></i>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
 <script src="/js/style.js"></script>
+
+<script>
+    function previewImagem(event) {
+        const preview = document.getElementById('preview');
+        const file = event.target.files[0];
+
+        if (file) {
+            preview.style.display = 'block';
+            preview.src = URL.createObjectURL(file);
+        } else {
+            preview.style.display = 'none';
+            preview.src = '#';
+        }
+    }
+</script>
 
 </body>
 </html>

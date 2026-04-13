@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Consulta de Clientes - Gestão de Estoque</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Produtos - Gestão de Estoque</title>
 
     <!-- Google Fonts + Libertinus -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libertinus+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Seu CSS -->
     <link rel="stylesheet" href="/style.css">
@@ -16,108 +19,257 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="with-header">
+<body class="with-header bg-light">
+
 <div th:replace="fragments/header :: mainHeader"></div>
-<div class="container">
-    <form class="mainFiltro" method="get" action="/mainCliente">
-        <div class="input-group">
-            <input type="number" name="codigo" placeholder="Buscar por código" th:value="${param.codigo}">
-            <i class="fas fa-envelope"></i>
-        </div>
-        <div class="input-group">
-            <input type="text" name="nome" placeholder="Buscar por nome" th:value="${param.nome}">
-            <i class="fas fa-envelope"></i>
-        </div>
-        <div class="input-group">
-            <input type="text" name="cpf" placeholder="Buscar por CPF" th:value="${param.cpf}">
-            <i class="fas fa-envelope"></i>
-        </div>
 
-        <button type="submit" class="btn">
-            <i class="fas fa-search"></i> Buscar
-        </button>
-    </form>
+<main class="container-fluid py-4">
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-    <div class="tabela">
-        <!-- Tabela -->
-        <div class="tabela-wrapper">
-            <table class="tabela-clientes">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>Código</th>
-                    <th>Imagem</th>
-                    <th>Nome</th>
-                    <th>Tipo</th>
-                    <th>Grupo</th>
-                    <th>Unidade</th>
-                    <th>Estoque Atual</th>
-                    <th>Est. Máx</th>
-                    <th>Est. Mín</th>
-                    <th>Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="produto : ${produtos}"
-                    th:onclick="'window.location.href=\'/editarProduto/' + ${produto.id} + '\';'"
-                    th:classappend="${!produto.ativo} ? 'linha-inativa' : ''"
-                    style="cursor:pointer;">
+            <!-- Formulário de filtro -->
+            <form class="row g-3 mb-4" method="get" action="/mainProduto">
+                <div class="col-12 col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-hashtag text-muted"></i>
+                        </span>
+                        <input type="number" class="form-control" name="codigo" placeholder="Código" th:value="${param.codigo}">
+                    </div>
+                </div>
 
-                    <!-- EXCLUIR -->
-                    <td class="col-excluir">
-                        <button type="button" class="btn-excluir" th:attr="data-id=${produto.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
+                <div class="col-12 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-tag text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control" name="nome" placeholder="Nome do produto" th:value="${param.nome}">
+                    </div>
+                </div>
 
-                    <!-- ID -->
-                    <td th:text="${produto.id}">0</td>
+                <div class="col-12 col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white">
+                            <i class="fas fa-barcode text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control" name="codigoBarras" placeholder="Código de barras" th:value="${param.codigoBarras}">
+                    </div>
+                </div>
 
-                    <!-- IMAGEM -->
-                    <td>
-                        <img th:src="@{'/produto/imagem/' + ${produto.id}}"
-                             width="80"
-                             height="80"
-                             style="object-fit:cover;border-radius:8px"
-                             onerror="this.src='/img/SEMIMAGEM.jpg'" />
-                    </td>
+                <div class="col-12 col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> <span class="d-none d-sm-inline">Buscar</span>
+                    </button>
+                </div>
+            </form>
 
-                    <!-- NOME -->
-                    <td th:text="${produto.nome}">-</td>
+            <!-- Versão Desktop - Tabela -->
+            <div class="d-none d-xl-block">
+                <div class="table-container">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                        <tr>
+                            <th style="width: 50px;"></th>
+                            <th>Código</th>
+                            <th>Imagem</th>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Grupo</th>
+                            <th>Unidade</th>
+                            <th>Est. Atual</th>
+                            <th>Est. Máx</th>
+                            <th>Est. Mín</th>
+                            <th style="width: 100px;">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="produto : ${produtos}"
+                            th:onclick="'window.location.href=\'/editarProduto/' + ${produto.id} + '\';'"
+                            th:classappend="${!produto.ativo} ? 'table-danger' : ''"
+                            style="cursor:pointer;">
 
-                    <!-- TIPO -->
-                    <td th:text="${produto.tipo}">-</td>
+                            <td onclick="event.stopPropagation();">
+                                <button type="button" class="btn btn-sm btn-danger" th:attr="data-id=${produto.id}" title="Excluir">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
 
-                    <!-- GRUPO -->
-                    <td th:text="${produto.grupo}">-</td>
+                            <td th:text="${produto.id}" class="fw-bold">0</td>
 
-                    <!-- UNIDADE -->
-                    <td th:text="${produto.unidadeMedida}">-</td>
+                            <td>
+                                <img th:src="${produto.fotoUrl != null ? produto.fotoUrl : '/img/no-image.jpg'}"
+                                     width="50" height="50"
+                                     style="object-fit:cover; border-radius:8px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
+                                     onerror="this.src='/img/no-image.jpg'" />
+                            </td>
 
-                    <!-- ESTOQUES -->
-                    <td th:text="${#numbers.formatDecimal(produto.estoqueAtual, 1, 'POINT', 3, 'NONE')}">0</td>
-                    <td th:text="${#numbers.formatDecimal(produto.estoqueMaximo, 1, 'POINT', 3, 'NONE')}">0</td>
-                    <td th:text="${#numbers.formatDecimal(produto.estoqueMinimo, 1, 'POINT', 3, 'NONE')}">0</td>
+                            <td th:text="${produto.nome}" class="fw-bold">-</td>
+                            <td th:text="${produto.tipoDescricao}">-</td>
+                            <td th:text="${produto.grupoDescricao}">-</td>
+                            <td th:text="${produto.unidadeMedidaNome}">-</td>
 
-                    <!-- STATUS -->
-                    <td>
-                                <span th:text="${produto.ativo ? 'ATIVO' : 'INATIVO'}"
-                                      th:classappend="${produto.ativo} ? 'status-badge ativo' : 'status-badge inativo'">
+                            <td th:text="${#numbers.formatDecimal(produto.estoqueAtual, 1, 'NONE', 3, 'POINT')}"
+                                th:class="${produto.estoqueAtual < produto.estoqueMinimo} ? 'text-danger fw-bold' : ''">0</td>
+                            <td th:text="${#numbers.formatDecimal(produto.estoqueMaximo, 1, 'NONE', 3, 'POINT')}">0</td>
+                            <td th:text="${#numbers.formatDecimal(produto.estoqueMinimo, 1, 'NONE', 3, 'POINT')}">0</td>
+
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${produto.ativo} ? 'bg-success' : 'bg-danger'"
+                                      th:text="${produto.ativo ? 'ATIVO' : 'INATIVO'}">
                                 </span>
-                    </td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                </tr>
-                </tbody>
-            </table>
+            <!-- Versão Tablet - Cards -->
+            <div class="d-none d-md-block d-xl-none">
+                <div class="cards-scroll">
+                    <div class="row g-3">
+                        <div class="col-md-6" th:each="produto : ${produtos}">
+                            <div class="card shadow-sm h-100"
+                                 th:classappend="${!produto.ativo} ? 'border-danger' : ''"
+                                 style="cursor:pointer;"
+                                 th:onclick="'window.location.href=\'/editarProduto/' + ${produto.id} + '\';'">
+
+                                <div class="card-body">
+                                    <div class="d-flex gap-3">
+                                        <img th:src="${produto.fotoUrl != null ? produto.fotoUrl : '/img/no-image.jpg'}"
+                                             width="80" height="80"
+                                             style="object-fit:cover; border-radius:8px;"
+                                             onerror="this.src='/img/no-image.jpg'" />
+
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h6 class="mb-1 fw-bold" th:text="${produto.nome}"></h6>
+                                                <span class="badge"
+                                                      th:classappend="${produto.ativo} ? 'bg-success' : 'bg-danger'"
+                                                      th:text="${produto.ativo ? 'ATIVO' : 'INATIVO'}">
+                                                </span>
+                                            </div>
+
+                                            <div class="small text-muted">
+                                                <i class="fas fa-hashtag me-1"></i> Código: <span th:text="${produto.id}"></span>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <i class="fas fa-tag me-1"></i> Tipo: <span th:text="${produto.tipoDescricao}"></span>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <i class="fas fa-layer-group me-1"></i> Grupo: <span th:text="${produto.grupoDescricao}"></span>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <i class="fas fa-weight-scale me-1"></i> Unidade: <span th:text="${produto.unidadeMedidaNome}"></span>
+                                            </div>
+
+                                            <div class="row g-1 mt-2">
+                                                <div class="col-4 text-center">
+                                                    <div class="small fw-bold" th:text="${#numbers.formatDecimal(produto.estoqueAtual, 1, 'NONE', 3, 'POINT')}"></div>
+                                                    <small class="text-muted">Atual</small>
+                                                </div>
+                                                <div class="col-4 text-center">
+                                                    <div class="small" th:text="${#numbers.formatDecimal(produto.estoqueMaximo, 1, 'NONE', 3, 'POINT')}"></div>
+                                                    <small class="text-muted">Máx</small>
+                                                </div>
+                                                <div class="col-4 text-center">
+                                                    <div class="small" th:text="${#numbers.formatDecimal(produto.estoqueMinimo, 1, 'NONE', 3, 'POINT')}"></div>
+                                                    <small class="text-muted">Mín</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3 d-flex justify-content-end gap-2" onclick="event.stopPropagation();">
+                                        <a class="btn btn-sm btn-outline-success" th:href="@{/editarProduto/{id}(id=${produto.id})}" title="Editar">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-danger" th:attr="data-id=${produto.id}" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Versão Mobile - Cards simples -->
+            <div class="d-md-none">
+                <div class="cards-scroll">
+                    <div class="row g-2">
+                        <div class="col-12" th:each="produto : ${produtos}">
+                            <div class="card shadow-sm"
+                                 th:classappend="${!produto.ativo} ? 'border-danger' : ''"
+                                 style="cursor:pointer;"
+                                 th:onclick="'window.location.href=\'/editarProduto/' + ${produto.id} + '\';'">
+
+                                <div class="card-body p-3">
+                                    <div class="d-flex gap-2">
+                                        <img th:src="${produto.fotoUrl != null ? produto.fotoUrl : '/img/no-image.jpg'}"
+                                             width="60" height="60"
+                                             style="object-fit:cover; border-radius:8px;"
+                                             onerror="this.src='/img/no-image.jpg'" />
+
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between">
+                                                <h6 class="mb-0 fw-bold" th:text="${produto.nome}"></h6>
+                                                <span class="badge"
+                                                      th:classappend="${produto.ativo} ? 'bg-success' : 'bg-danger'"
+                                                      th:text="${produto.ativo ? 'ATIVO' : 'INATIVO'}">
+                                                </span>
+                                            </div>
+
+                                            <div class="small text-muted">
+                                                <span th:text="${produto.tipoDescricao}"></span> ·
+                                                <span th:text="${produto.grupoDescricao}"></span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between mt-1 small">
+                                                <span>Atual: <strong th:text="${#numbers.formatDecimal(produto.estoqueAtual, 1, 'NONE', 3, 'POINT')}"></strong></span>
+                                                <span>Máx: <span th:text="${#numbers.formatDecimal(produto.estoqueMaximo, 1, 'NONE', 3, 'POINT')}"></span></span>
+                                                <span>Mín: <span th:text="${#numbers.formatDecimal(produto.estoqueMinimo, 1, 'NONE', 3, 'POINT')}"></span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-2 d-flex justify-content-end gap-1" onclick="event.stopPropagation();">
+                                        <a class="btn btn-sm btn-success" th:href="@{/editarProduto/{id}(id=${produto.id})}" title="Editar">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-danger" th:attr="data-id=${produto.id}" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensagem quando não há resultados -->
+            <div th:if="${#lists.isEmpty(produtos)}" class="text-center py-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Nenhum produto encontrado</h5>
+                <p class="text-muted">Tente ajustar os filtros de busca ou cadastre um novo produto.</p>
+                <a href="/novoProduto" class="btn btn-primary mt-2">
+                    <i class="fas fa-plus me-2"></i>Novo Produto
+                </a>
+            </div>
 
         </div>
     </div>
-</div>
+</main>
 
 <!-- Botão Flutuante -->
-<a href="/novoProduto" class="botaoFlutuante" title="Incluir novo produto">
+<a href="/novoProduto" class="botao-flutuante-novo" title="Novo Produto">
     <i class="fas fa-plus"></i>
 </a>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/style.js}"></script>
 </body>
 </html>
